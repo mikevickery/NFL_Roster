@@ -1,0 +1,35 @@
+﻿body {
+    background-color:royalblue;
+}
+.nfl-logo {
+    background-image: url("images/nfl-logo.gif");
+}
+.banner {
+    color:darkblue;
+}
+.card1{
+    display:inline-block;
+    border-width: 1px;
+    border-color: black;
+    margin:10px;
+}
+.card2 {
+    width:125px;
+}
+.cardtext{
+    background-color:ghostwhite;
+    font-size:small;
+}
+.ctr {
+    text-align:center;
+}
+input {
+  display:inline-block;
+  margin:4px;
+  width:140px;
+}
+.addBox {
+    display:inline-block;
+    text-align:right;
+    width:280px;
+}
