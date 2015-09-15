@@ -7,11 +7,10 @@
 .banner {
     color:darkblue;
 }
-.card1{
+.player-card {
     display:inline-block;
-    border-width: 1px;
-    border-color: black;
-    margin:10px;
+    border: 1px solid black;
+    margin:8px;
 }
 .card2 {
     width:125px;
@@ -24,12 +23,18 @@
     text-align:center;
 }
 input {
-  display:inline-block;
-  margin:4px;
-  width:140px;
+    display:inline-block;
+    margin:4px;
+    width:140px;
 }
 .addBox {
     display:inline-block;
     text-align:right;
     width:280px;
+}
+.panel-footer {
+    font-size: xx-small;
+}
+.foot1 {
+    display:inline-block;
 }
