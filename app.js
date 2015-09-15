@@ -42,3 +42,13 @@ function setIDs() {
 }
 
 setIDs();
+
+$(document).ready(function () {
+    $(".player-card").mouseenter(function () {
+        $(this).fadeTo('slow', 0.75);
+    });
+    $(".player-card").mouseleave(function () {
+        $(this).fadeTo('fast', 1);
+    });
+});
+
