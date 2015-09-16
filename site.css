@@ -9,7 +9,7 @@
 }
 .player-card {
     display:inline-block;
-    border: 1px solid black;
+    border: 1px solid blue;
     margin:8px;
 }
 .card2 {
@@ -38,3 +38,14 @@ input {
 .foot1 {
     display:inline-block;
 }
+.button-add-custom {
+    width:120px;
+    background-color:#A2CCFF;
+    border:1px darkblue solid;
+}
+.button-reset-custom {
+    width:60px;
+    background-color:#A2CCFF;
+    border:1px darkblue solid;
+}
+

@@ -32,6 +32,28 @@
 //}
 //setIDs();
 
+var gPlayerId = 0;
+
+function Player(name, position, number, id) {
+    this.name = name;
+    this.position = position;
+    this.number = number;
+    this.id = id;
+}
+
+//var PlayerFactory = {
+//    createPlayer: function (name, position, number) {
+//        gPlayerId++;
+//        return new roster(name, position, number, gPlayerId);
+//    }
+//}
+
+function listPlayers() {
+    for (var i = 0; i < Player.length; i++) {
+        alert(PlayerFactory);
+    }
+}
+
 $(document).ready(function () {
     $(".cardtext").mouseenter(function () {
         $(this).fadeTo('slow', 0.65);
@@ -45,12 +67,27 @@ $("#button-add-player").on('click', function () {
     var name = $('#playerName').val();
     var position = $('#playerPosition').val();
     var number = $('#playerNumber').val();
+    if (name === "" || name === "name" || position === "" || position === "position" || number === "" || number === "number") {
+        return;
+    }
+    // alert(name + " "  + position + " " + number);
     var html = '<div class="player-card">' +
         '<img src="http://s.nflcdn.com/static/content/public/image/fantasy/transparent/200x200/" class="card2" />' +
         '<div class="cardtext ctr">' +
         '<div><span>' + name + '</span></div>' +
         '<div><span>' + position + '</span></div>' +
-        '<div><span>#' + number + '</span></div></div>';    
+        '<div><span>#' + number + ' (Id=' + gPlayerId + ')</span></div></div>';    
+    //var PlayerFactory = {
+    //    _uniqueId: 0,
+    //    createPlayer: function (name, position, number) {
+    //        this._uniqueId++;
+    //        alert(this._uniqueId + " " + createPlayer);
+    //        return new Player(name, position, number, this.uniqueId);
+    //    }
+    //}
+    //listPlayers();
     $('.player-roster').prepend(html);
+    $('#playerName').find('*').val('');
 });
+
 

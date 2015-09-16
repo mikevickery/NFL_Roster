@@ -17,27 +17,27 @@
                 <!-- BEGIN: multiple player cards displayed here -->
                 <div class="player-roster ctr">
 
-                    <!-- multiple player cards inserted here -->
+                    <!-- multiple player cards inserted here --> 
 
                     <!-- BEGIN: inline 'Add Player to Roster' form -->
                     <div class="panel panel-default addBox">
                         <div class="panel-body">
                             <h4 class="banner ctr"><strong>Add Player to Roster</strong></h4>
-                            <form id="PlayerForm" action="nothing right now" class="navbar-form">
+                            <form id="playerForm" action="nothing right now" class="navbar-form">
                                 <div class="form-group">
                                     <label for="playerName">Name : </label>
-                                    <input id="playerName" type="text" />
+                                    <input id="playerName" type="text" value="name" />
                                 </div><br />
                                 <div class="form-group">
                                     <label for="playerPosition">Position : </label>
-                                    <input id="playerPosition" type="text" />
+                                    <input id="playerPosition" type="text" value="position" />
                                 </div><br />
                                 <div class="form-group">
                                     <label for="playerNumber">Number : </label>
-                                    <input id="playerNumber" type="text" />
+                                    <input id="playerNumber" type="text" value="number" />
                                 </div><br />
-                                <span class="btn btn-default" id="button-add-player">Click to Add Player</span>
-                                <button type="reset" id="button-reset">Reset</button>                                
+                                <span class="btn btn-default button-add-custom" id="button-add-player">Add Player</span>
+                                <input class="btn btn-default button-reset-custom" type="reset" />
                             </form>
                         </div>
                     </div>
