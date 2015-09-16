@@ -7,20 +7,21 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "NFL_Roster", ".", "{3011D5C
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_60170"
-		Debug.AspNetCompiler.PhysicalPath = "..\..\..\..\..\..\source\NFL_Roster\"
+		Debug.AspNetCompiler.PhysicalPath = "..\NFL_Roster\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_60170\"
 		Debug.AspNetCompiler.Updateable = "true"
 		Debug.AspNetCompiler.ForceOverwrite = "true"
 		Debug.AspNetCompiler.FixedNames = "false"
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.VirtualPath = "/localhost_60170"
-		Release.AspNetCompiler.PhysicalPath = "..\..\..\..\..\..\source\NFL_Roster\"
+		Release.AspNetCompiler.PhysicalPath = "..\NFL_Roster\"
 		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_60170\"
 		Release.AspNetCompiler.Updateable = "true"
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "60170"
+		SlnRelativePath = "..\NFL_Roster\"
 	EndProjectSection
 EndProject
 Global
