@@ -35,17 +35,28 @@ input {
 .panel-footer {
     font-size: x-small;
 }
-.foot1 {
+.inlineBlock {
     display:inline-block;
 }
 .button-add-custom {
-    width:120px;
+    display:inline-block;
+    width:100px;
     background-color:#A2CCFF;
     border:1px darkblue solid;
 }
 .button-reset-custom {
+    display:inline-block;
     width:60px;
     background-color:#A2CCFF;
+    border:1px darkblue solid;
+}
+.button-initial-custom {
+    background-color:#A2CCFF;
+    border:1px darkblue solid;
+}
+.remove-button {
+    display:inline-block;
+    background-color:red;
     border:1px darkblue solid;
 }
 

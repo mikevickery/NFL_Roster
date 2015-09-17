@@ -26,19 +26,23 @@
                             <form id="playerForm" action="nothing right now" class="navbar-form">
                                 <div class="form-group">
                                     <label for="playerName">Name : </label>
-                                    <input id="playerName" type="text" value="name" />
+                                    <input id="playerName" type="text" value="" />
                                 </div><br />
                                 <div class="form-group">
                                     <label for="playerPosition">Position : </label>
-                                    <input id="playerPosition" type="text" value="position" />
+                                    <input id="playerPosition" type="text" value="" />
                                 </div><br />
                                 <div class="form-group">
                                     <label for="playerNumber">Number : </label>
-                                    <input id="playerNumber" type="text" value="number" />
+                                    <input id="playerNumber" type="text" value="" />
                                 </div><br />
-                                <span class="btn btn-default button-add-custom" id="button-add-player">Add Player</span>
-                                <input class="btn btn-default button-reset-custom" type="reset" />
-                            </form>
+                                <div class="inlineBlock">
+                                    <input class="btn btn-default button-add-custom" id="button-add-player" value="Add Player" />
+                                </div>
+                                <div class="inlineBlock">
+                                    <input class="btn btn-default button-reset-custom" type="reset" />
+                                </div>
+                           </form>
                         </div>
                     </div>
                     <!-- END: inline 'Add Player to Roster' form -->
@@ -47,20 +51,23 @@
 
             <!-- BEGIN: footer -->
             <div class="panel-footer">
-                <div class="foot1"><strong>Starters</strong>
+                <div class="inlineBlock"><strong>Starters</strong>
                     <ul><li>1 Quarterback (QB)</li>
                     <li>2 Running Backs (RB)</li></ul>
                 </div>
-                <div class="foot1"><ul><li>2 Wide Receivers (WR)</li>
+                <div class="inlineBlock"><ul><li>2 Wide Receivers (WR)</li>
                     <li>1 Flex RB/WR/TEs (RB/WR/TE)</li>
                     <li>1 Tight End (TE)</li></ul>
                 </div>            
-                <div class="foot1">
+                <div class="inlineBlock">
                     <ul>
                         <li>1 Placekicker (K)</li>
                         <li>1 Team Defense/Special Teams (D/ST)</li>
                         <li>7 Bench (BN)</li>
                     </ul>
+                </div>
+                <div class="inlineBlock">
+                    <input class="btn btn-default button-initial-custom btn-xs" id="initial-add-player" value="Load Default Roster" />
                 </div>
             </div>
             <!-- END: footer -->

@@ -1,23 +1,113 @@
-﻿//
-//function initialPlayerLoad() {
-//team.push(new Player("Russell Wilson", "QB", 3));
-//team.push(new Player("Reggie Bush", "RB", 23));
-//team.push(new Player("C.J. Anderson", "RB", 22));
-//team.push(new Player("Jeremy Maclin", "WR", 19));
-//team.push(new Player("Doug Baldwin", "WR", 89));
-//team.push(new Player("Jimmy Graham", "TE", 88));
-//team.push(new Player("James Casey", "TE", 80));
-//team.push(new Player("Steven Hauschka", "K", 4));
-//team.push(new Player("T.J. Ward", "ST", 43));
-//team.push(new Player("Tarvaris Jackson", "BN-QB", 7));
-//team.push(new Player("Luke Wilson", "BN-TE", 82));
-//team.push(new Player("Derrick Coleman", "BN-FB", 40));
-//team.push(new Player("Jordan Norwood", "BN-WR", 11));
-//team.push(new Player("Seth Roberts", "BN-WR", 10));
-//team.push(new Player("Marcel Reece", "BN-FB", 45));
-//team.push(new Player("Roy Helu", "BN-RB", 26));
-//}
-//initialPlayerLoad();
+﻿var roster = {
+    players: {},
+    addPlayer: function (player) {
+        if (player.name && player.position && player.number) {
+            this.players[player.id] = player;
+            updatePlayers();
+        } else {
+            alert("Unable to Add Player...likely missing data.");
+        }
+    }
+}
+
+var Player = function(name, position, number, id) {
+    this.name = name;
+    this.position = position;
+    this.number = number;
+    this.id = id;	
+}
+
+var PlayerFactory = {
+    _uniqueId:0,
+    createPlayer: function (name, position, number) {
+        this._uniqueId++;
+        return new Player(name, position, number, this._uniqueId);
+    }
+}
+
+$('#button-add-player').on('click', addPlayer);
+$('#initial-add-player').on('click', initialPlayerLoad);
+
+function addPlayer() {
+    var name =$('#playerName').val();
+    var position = $('#playerPosition').val();
+    var number = $('#playerNumber').val();
+    var thisPlayer = PlayerFactory.createPlayer(name, position, number);
+    var html = '<div class="player-card"><img src="images/nfl-player.gif" /><div class="cardtext ctr">' +
+        '<div><span>' + name + '</span></div><div><span>' + position + ' #' + number + '</span></div>' +
+        '<div><button class="btn btn-primary btn-xs remove-button">' +
+        'Remove</button></div></div></div>';
+    $('.player-roster').prepend(html);
+    //$('.remove-button').unbind().click(removePlayer);
+}
+
+function setDefaultPlayers(name,position,number) {
+    var thisPlayer = PlayerFactory.createPlayer(name, position, number);
+    var html = '<div class="player-card"><img src="images/nfl-player.gif" /><div class="cardtext ctr">' +
+        '<div><span>' + name + '</span></div><div><span>' + position + ' #' + number + '</span></div>' +
+        '<div><button class="btn btn-primary btn-xs remove-button">' +
+        'Remove</button></div></div></div>';
+    $('.player-roster').prepend(html);
+    //$('.remove-button').unbind().click(removePlayer);
+}
+
+$(function(){
+
+    $(".player-roster").on('click','.remove-button',function(event){
+        delete roster.players[this.id];
+        $(this).parents(".player-card").remove();
+    })
+
+})
+
+function getNFLPlayers() {
+    var NFLPlayers = [];
+    $.ajax({
+        type: 'GET',
+        url: 'http://www.nfl.com/players',
+        success: function (response) {
+            console.log(response);
+            response = JSON.parse(response);
+            NFLPlayers = response.players;
+        },
+        error: function (response) {
+            console.log('Whoa! That was a bad request.', response)
+        }
+    });
+}
+
+// *** testing jquery mouse events
+//$(document).ready(function () {
+//    $(".cardtext").mouseenter(function () {
+//        $(this).fadeTo('slow', 0.65);
+//    });
+//    $(".cardtext").mouseleave(function () {
+//        $(this).fadeTo('fast', 1);
+//    });
+//});
+
+function initialPlayerLoad() {
+    setDefaultPlayers("Russell Wilson", "QB", "3");
+    setDefaultPlayers("Reggie Bush", "RB", "23");
+    setDefaultPlayers("C.J. Anderson", "RB", "22");
+    setDefaultPlayers("Jeremy Maclin", "WR", "19");
+    setDefaultPlayers("Doug Baldwin", "WR", "89");
+    setDefaultPlayers("Jimmy Graham", "TE", "88");
+    setDefaultPlayers("James Casey", "TE", "80");
+    setDefaultPlayers("Steven Hauschka", "K", "4");
+    setDefaultPlayers("T.J. Ward", "ST", "43");
+    setDefaultPlayers("Tarvaris Jackson", "BN-QB", "7");
+    setDefaultPlayers("Luke Wilson", "BN-TE", "82");
+    setDefaultPlayers("Derrick Coleman", "BN-FB", "40");
+    setDefaultPlayers("Jordan Norwood", "BN-WR", "11");
+    setDefaultPlayers("Seth Roberts", "BN-WR", "10");
+    setDefaultPlayers("Marcel Reece", "BN-FB", "45");
+    setDefaultPlayers("Roy Helu", "BN-RB", "26");
+}
+
+// initialPlayerLoad();
+
+// *** old innerText approach to setting player ids 
 //function setIDs() {
 //    var str1 = "";
 //    var str2 = "";
@@ -31,63 +121,3 @@
 //    }
 //}
 //setIDs();
-
-var gPlayerId = 0;
-
-function Player(name, position, number, id) {
-    this.name = name;
-    this.position = position;
-    this.number = number;
-    this.id = id;
-}
-
-//var PlayerFactory = {
-//    createPlayer: function (name, position, number) {
-//        gPlayerId++;
-//        return new roster(name, position, number, gPlayerId);
-//    }
-//}
-
-function listPlayers() {
-    for (var i = 0; i < Player.length; i++) {
-        alert(PlayerFactory);
-    }
-}
-
-$(document).ready(function () {
-    $(".cardtext").mouseenter(function () {
-        $(this).fadeTo('slow', 0.65);
-    });
-    $(".cardtext").mouseleave(function () {
-        $(this).fadeTo('fast', 1);
-    });
-});
-
-$("#button-add-player").on('click', function () {
-    var name = $('#playerName').val();
-    var position = $('#playerPosition').val();
-    var number = $('#playerNumber').val();
-    if (name === "" || name === "name" || position === "" || position === "position" || number === "" || number === "number") {
-        return;
-    }
-    // alert(name + " "  + position + " " + number);
-    var html = '<div class="player-card">' +
-        '<img src="http://s.nflcdn.com/static/content/public/image/fantasy/transparent/200x200/" class="card2" />' +
-        '<div class="cardtext ctr">' +
-        '<div><span>' + name + '</span></div>' +
-        '<div><span>' + position + '</span></div>' +
-        '<div><span>#' + number + ' (Id=' + gPlayerId + ')</span></div></div>';    
-    //var PlayerFactory = {
-    //    _uniqueId: 0,
-    //    createPlayer: function (name, position, number) {
-    //        this._uniqueId++;
-    //        alert(this._uniqueId + " " + createPlayer);
-    //        return new Player(name, position, number, this.uniqueId);
-    //    }
-    //}
-    //listPlayers();
-    $('.player-roster').prepend(html);
-    $('#playerName').find('*').val('');
-});
-
-
