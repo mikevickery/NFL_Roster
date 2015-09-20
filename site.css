@@ -13,11 +13,11 @@
     margin:8px;
 }
 .card2 {
-    width:125px;
+    width:100px;
 }
 .cardtext{
     background-color:ghostwhite;
-    font-size:small;
+    font-size:x-small;
 }
 .ctr {
     text-align:center;
@@ -31,6 +31,13 @@ input {
     display:inline-block;
     text-align:right;
     width:280px;
+}
+.player-list-box{
+    display:inline-block;
+    margin:10px;
+    border-width:8px;
+    border-color:darkblue;
+    background-color:darkblue;
 }
 .panel-footer {
     font-size: x-small;
@@ -54,9 +61,16 @@ input {
     background-color:#A2CCFF;
     border:1px darkblue solid;
 }
-.remove-button {
+.button-remove-custom {
     display:inline-block;
+    font-size:xx-small;
     background-color:red;
     border:1px darkblue solid;
 }
-
+.table-header{
+    color:white;
+}
+.table-text {
+    font-size:x-small;
+    color:white;
+}
