@@ -1,4 +1,8 @@
 ﻿var defaultPhoto = "images/nfl-player.gif";
+var countr = 0;     // current number of players in roster
+var countp = 0;     // progress bar counter
+var countt = 0;     // progress bar total records
+var prog = 0;       // progress as a percent 1 to 100
 var roster = {
     players:{},
     addPlayer :function (player) {
@@ -32,6 +36,7 @@ var PlayerFactory = {
 function refreshRoster(){
     var refreshDiv = $(".player-roster");
     refreshDiv.html('');
+    countr = 0;
     for (var id in roster.players) {
         var player = roster.players[id];
         if (!player) {
@@ -45,14 +50,16 @@ function refreshRoster(){
             '<div><span>' + player.position + ' #' + player.number + '</span></div>' +
             '</div>';
         refreshDiv.append(html);
+        countr++;
     }
     listRosterSummary();
 }
 
 function listRosterSummary() {
-    var htmlTableHeader = "<tr class='table-header'><td colspan='5' align='middle'>" +
-        "<b>Roster Summary</b></td></tr>" +
-        "<tr class='table-header'><td width='90px'><u>Name</u></td>" +
+    var htmlTableHeader = "<tr class='table-header'>" +
+        "<td colspan='5' align='middle'><b>Roster Summary</b></td></tr>" +
+        "<tr class='table-header'>" +
+        "<td width='90px'><u>Name</u></td>" +
         "<td width='55px'><u>Position</u></td>" +
         "<td width='55px'><u>Number</u></td>" +
         "<td width='55px'><u>Status</u></td>" +
@@ -60,7 +67,8 @@ function listRosterSummary() {
     var htmlTableBody = "";
     for (var id in roster.players) {
         var player = roster.players[id];
-        htmlTableBody = htmlTableBody + "<tr><td class='table-text'>" + player.name + "</td>" +
+        htmlTableBody = htmlTableBody + "<tr>" +
+            "<td class='table-text'>" + player.name + "</td>" +
             "<td class='table-text'>" + player.position + "</td>" +
             "<td class='table-text'>" + player.number + "</td>" +
             "<td class='table-text'>" + player.status + "</td>" +
@@ -86,15 +94,32 @@ $(function(){
 
 })
 
+function updateProgressBar() {
+    var progHtml = '<div class="progress">' +
+        '<div class="progress-bar progress-bar-info progress-bar-striped active"' +
+        'role="progressbar" aria-valuenow="' + prog.toFixed(0) + '" aria-valuemin="0" aria-valuemax="100" ' +
+        'style="width:' + prog.toFixed(0) + '%">Refreshing Roster - ' + prog.toFixed(0) + '% Complete</div></div>';
+    $("#progress-update").html(progHtml);
+}
+
 // player image load
 function loadPlayerImages() {
     var url = "http://bcw-getter.herokuapp.com/?url=";
     var url2 = "http://api.cbssports.com/fantasy/players/list?version=3.0&SPORT=football&response_format=json";
     var apiUrl = url + encodeURIComponent(url2);
+    countt = 0;
+    countp = 0;
+    prog = 0;
     $.getJSON(apiUrl, function (data) {
         var players = data.body.players;
+        countt = data.body.players.length * countr;
         players.forEach(function (players) {
             for (var id in roster.players) {
+                countp++;
+                prog = (countp / countt) * 100;
+                // TESTING progress bar - console.log has 1 to 100 but does not do updateProgressBar function until JSON is finished
+                console.log(countt + ":" + countp + ":" + prog.toFixed(0));
+                updateProgressBar();
                 var player = roster.players[id];
                 //console.log("Finding image for " + player.id + " : " + player.name + " photo:" + player.photo);
                 if (players.fullname === player.name) {
@@ -156,32 +181,3 @@ loadPlayerImages();
 //    }
 //}
 //setIDs();
-
-//function getNFLPlayers() {
-//    var NFLPlayers = [];
-//    $.ajax({
-//        type: 'GET',
-//        url: ' http://api.cbssports.com/fantasy/players/list?version=3.0&SPORT=football&response_format=json',
-//        success: function (response) {
-//            console.log(response);
-//            response = JSON.parse(response);
-//            NFLPlayers = response.players;
-//        },
-//        error: function (response) {
-//            console.log('Whoa! That was a bad request.', response)
-//        }
-//    });
-//}
-
-// *** testing jquery mouse events
-//$(document).ready(function () {
-//    $(".cardtext").mouseenter(function () {
-//        $(this).fadeTo('slow', 0.65);
-//    });
-//    $(".cardtext").mouseleave(function () {
-//        $(this).fadeTo('fast', 1);
-//    });
-//});
-
-//$('#nfl-load').on('click', listRosterSummary);
-

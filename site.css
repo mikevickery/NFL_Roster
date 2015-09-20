@@ -6,6 +6,7 @@
 }
 .banner {
     color:darkblue;
+    width:130px;
 }
 .player-card {
     display:inline-block;
@@ -60,6 +61,12 @@ input {
 .button-initial-custom {
     background-color:#A2CCFF;
     border:1px darkblue solid;
+    width:60px;
+}
+.button-default-custom {
+    background-color:#A2CCFF;
+    border:1px darkblue solid;
+    width:105px;
 }
 .button-remove-custom {
     display:inline-block;
@@ -73,4 +80,7 @@ input {
 .table-text {
     font-size:x-small;
     color:white;
+}
+.progress-bar-custom{
+    width:220px;
 }
