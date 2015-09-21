@@ -67,6 +67,11 @@ input {
     border:1px darkblue solid;
     width:105px;
 }
+.button-fullNFL-custom {
+    background-color:#A2CCFF;
+    border:1px darkblue solid;
+    width:200px;
+}
 .button-remove-custom {
     display:inline-block;
     font-size:xx-small;

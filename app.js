@@ -80,10 +80,16 @@ function refreshRoster(){
         var html = '<div class="player-card inlineBlock">' +
             '<button class="btn btn-xs btn-danger remove-player button-remove-custom' +
             '" id="' + player.id + '">' + 'Remove</button><br />' +
-            '<img src="'+player.photo+'" class="card2" /><div class="cardtext ctr">' +
+            '<img src="' + player.photo + '" class="card2" /><div class="cardtext ctr">' +
             '<div><span>' + player.name + '</span></div>' +
-            '<div><span>' + player.position + ' #' + player.number + '</span></div>' +
-            '</div>';
+            '<div><span>' + player.position;
+        if (player.number) {
+            html = html + ' #' + player.number;
+        };
+        if (player.team) {
+            html = html + '  ' + player.team;
+        };
+        html = html + '</span></div></div>';
         refreshDiv.append(html);
         countr++;
     }
@@ -149,9 +155,12 @@ function listFullNFL() {
         }
     }
     $("#fullNFLTable").html(htmlTable2Header + htmlTable2Body);
+    $(".nfl-full-container").fadeIn('slow');
+    $(".container-footer").scrollView();
 }
 
 function removeFullNFL() {
+    $(".nfl-full-container").fadeOut('slow');
     var htmlTable2Header = "<tr><td></td></tr>"
     $("#fullNFLTable").html(htmlTable2Header);
 }
@@ -175,6 +184,14 @@ $(function(){
         delete roster.players[this.id];
         refreshRoster();
     });
+
+    $.fn.scrollView = function () {
+        return this.each(function () {
+            $('html, body').animate({
+                scrollTop: $(this).offset().top
+            }, 1000);
+        });
+    };
 
     $('#reload-default-players').on('click', initialPlayerLoad);
 
@@ -292,13 +309,14 @@ function initialPlayerLoad() {
 }
 
 // functions done at launch...also linked to buttons in footer panel
+$(".nfl-full-container").fadeOut('slow');
 initialPlayerLoad();
 listRosterSummary();
 loadPlayerImages();
-listFullNFL();
+//listFullNFL();
 //getPlayers();
 
-// *** old innerText approach to setting player ids with an array
+// *** old innerText approach to setting player ids within an array for use on a button
 // replaced with objects in object
 //function setIDs() {
 //    var str1 = "";
