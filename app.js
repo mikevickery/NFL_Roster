@@ -1,4 +1,5 @@
 ﻿var defaultPhoto = "images/nfl-player.gif";
+var unknownPhoto = "https://auth.cbssports.com/images/players/unknown-player-170x170.png";
 var countr = 0;     // current number of players in roster
 var countn = 0;     // total players on full NFL list
 var countp = 0;     // progress bar counter
@@ -79,8 +80,13 @@ function refreshRoster(){
         }
         var html = '<div class="player-card inlineBlock">' +
             '<button class="btn btn-xs btn-danger remove-player button-remove-custom' +
-            '" id="' + player.id + '">' + 'Remove</button><br />' +
-            '<img src="' + player.photo + '" class="card2" /><div class="cardtext ctr">' +
+            '" id="' + player.id + '">' + 'Remove</button><br />';
+        if (!player.photo || player.photo === unknownPhoto) {
+            html = html + '<img src="' + defaultPhoto + '" class="card2" />';
+        } else {
+            html = html + '<img src="' + player.photo + '" class="card2" />';
+        }
+        html = html + '<div class="cardtext ctr">' +
             '<div><span>' + player.name + '</span></div>' +
             '<div><span>' + player.position;
         if (player.number) {
@@ -110,9 +116,13 @@ function listRosterSummary() {
         var player = roster.players[id];
         htmlTableBody = htmlTableBody + "<tr>" +
             "<td class='table-text'>" + player.name + "</td>" +
-            "<td class='table-text'>" + player.position + "</td>" +
-            "<td class='table-text'>" + player.number + "</td>" +
-            "<td class='table-text'>" + player.status + "</td>" +
+            "<td class='table-text'>" + player.position + "</td>";
+        if (!player.number) {
+            htmlTableBody = htmlTableBody + "<td class='table-text'> </td>";
+        } else {
+            htmlTableBody = htmlTableBody + "<td class='table-text'>" + player.number + "</td>";
+        }
+        htmlTableBody = htmlTableBody + "<td class='table-text'>" + player.status + "</td>" +
             "<td class='table-text'>" + player.team + "</td></tr>";
     }
     $("#playerTable").html(htmlTableHeader + htmlTableBody);

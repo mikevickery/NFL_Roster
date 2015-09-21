@@ -33,7 +33,7 @@ $.getJSON(apiUrl, function (data) {
     var positions = {};
 
     players.forEach(function (player) {
-        if (player.fullname === "T.J. Ward") {
+        if (player.fullname === "Joe Adams") {
             $('#results').JSONView(player);
             $('body').prepend('<img src="' + player.photo + '">');
             return;
