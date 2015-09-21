@@ -118,50 +118,56 @@ function listRosterSummary() {
     $("#playerTable").html(htmlTableHeader + htmlTableBody);
 }
 
-function listFullNFL() {
-    var htmlTable2Header = "<tr class='table2-header'>" +
-        "<td width='100px'> </td>" +
-        "<td width='150px'><u>Player Name</u></td>" +
-        "<td width='55px'><u>Position</u></td>" +
-        "<td width='55px'><u>Number</u></td>" +
-        "<td width='45px'><u>Status</u></td>" +
-        "<td width='45px'><u>Team</u></td>" +
-        "<td width='75px'><u>Bye Week</u></td>" +
-        "<td width='55px'><u>Age</u></td></tr>";
+function listFullNFL2() {
+    var htmlTable2Header = '<div class="t-row">' +
+        '<div class="t-row-cell"> </div>' +
+        '<div class="t-row-cell1"><u>Player Name</u></div>' +
+        '<div class="t-row-cell2"><u>Position</u></div>' +
+        '<div class="t-row-cell2"><u>Number</u></div>' +
+        '<div class="t-row-cell2"><u>Status</u></div>' +
+        '<div class="t-row-cell2"><u>Team</u></div>' +
+        '<div class="t-row-cell2"><u>Bye Week</u></div>' +
+        '<div class="t-row-cell2"><u>Age</u></div></div>';
     var htmlTable2Body = "";
     for (var id in fullNFL.players2) {
         var player = fullNFL.players2[id];
         if (!player) {
 
         }
-        htmlTable2Body = htmlTable2Body + "<tr><td><button class='btn btn-xs btn-warning add-player-list' " +
-            "id='" + player.id + "' type='submit'>Add to My Roster</button></td>" +
-            "<td class='table2-text'>" + player.name + "</td>" +
-            "<td class='table2-text'>" + player.position + "</td>" +
-            "<td class='table2-text'>";
-        if (player.number) {
-            htmlTable2Body = htmlTable2Body + player.number + "</td>";
+        if (player.id % 2 === 0) {
+            htmlTable2Body = htmlTable2Body + '<div class="t-row t-row-shade">';
         } else {
-            htmlTable2Body = htmlTable2Body + " </td>";
+            htmlTable2Body = htmlTable2Body + '<div class="t-row">';
         }
-        htmlTable2Body = htmlTable2Body + "<td class='table2-text'>" + player.status + "</td>" +
-            "<td class='table2-text'>" + player.team + "</td>" +
-            "<td class='table2-text'>" + player.byeweek + "</td>" +
-            "<td class='table2-text'>"
-        if (player.age) {
-            htmlTable2Body = htmlTable2Body + player.age + "</td></tr>";
+        htmlTable2Body = htmlTable2Body + '<div class="t-row-cell">' +
+            '<button class="btn btn-xs btn-warning add-player-list" id="' + player.id + '" ' +
+            'type="submit">Add to My Roster</button></div>' +
+            '<div class="t-row-cell1">' + player.name + '</div>' +
+            '<div class="t-row-cell2">' + player.position + '</div>' +
+            '<div class="t-row-cell2">';
+        if (player.number) {
+            htmlTable2Body = htmlTable2Body + player.number + '</div>';
         } else {
-            htmlTable2Body = htmlTable2Body + " </td></tr>";
+            htmlTable2Body = htmlTable2Body + ' </div>';
+        }
+        htmlTable2Body = htmlTable2Body + '<div class="t-row-cell2">' + player.status + '</div>' +
+            '<div class="t-row-cell2">' + player.team + '</div>' +
+            '<div class="t-row-cell2">' + player.byeweek + '</div>' +
+            '<div class="t-row-cell2">';
+        if (player.age) {
+            htmlTable2Body = htmlTable2Body + player.age + '</div></div>';
+        } else {
+            htmlTable2Body = htmlTable2Body + ' </div></div>';
         }
     }
-    $("#fullNFLTable").html(htmlTable2Header + htmlTable2Body);
+    $("#fullNFLlist2").html(htmlTable2Header + htmlTable2Body);
     $(".nfl-full-container").fadeIn('slow');
     $(".container-footer").scrollView();
 }
 
 function removeFullNFL() {
     $(".nfl-full-container").fadeOut('slow');
-    var htmlTable2Header = "<tr><td></td></tr>"
+    var htmlTable2Header = "<div></div>"
     $("#fullNFLTable").html(htmlTable2Header);
 }
 
@@ -197,7 +203,7 @@ $(function(){
 
     $('#reload-player-images').on('click', loadPlayerImages);
 
-    $('#reload-fullNFL').on('click', listFullNFL);
+    $('#reload-fullNFL').on('click', listFullNFL2);
 
     $('#remove-fullNFL').on('click', removeFullNFL);
 
@@ -309,11 +315,11 @@ function initialPlayerLoad() {
 }
 
 // functions done at launch...also linked to buttons in footer panel
-$(".nfl-full-container").fadeOut('slow');
+$(".nfl-full-container").fadeOut('slow');   // hide until requested by user
 initialPlayerLoad();
 listRosterSummary();
 loadPlayerImages();
-//listFullNFL();
+//listFullNFL2();
 //getPlayers();
 
 // *** old innerText approach to setting player ids within an array for use on a button

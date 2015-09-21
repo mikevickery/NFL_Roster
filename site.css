@@ -104,3 +104,18 @@ input {
     background-color:lightblue;
     margin:10px;
 }
+.t-row-cell {
+    display:inline-block;
+    width:120px;
+}
+.t-row-cell1 {
+    display:inline-block;
+    width:170px;
+}
+.t-row-cell2 {
+    display:inline-block;
+    width:60px;
+}
+.t-row-shade {
+    background-color:lightblue;
+}
