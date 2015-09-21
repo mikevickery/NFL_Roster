@@ -6,7 +6,6 @@
 }
 .banner {
     color:darkblue;
-    width:130px;
 }
 .player-card {
     display:inline-block;
@@ -33,7 +32,7 @@ input {
     text-align:right;
     width:280px;
 }
-.player-list-box{
+.player-list-box {
     display:inline-block;
     margin:10px;
     border-width:8px;
@@ -74,13 +73,29 @@ input {
     background-color:red;
     border:1px darkblue solid;
 }
-.table-header{
+.table-header {
     color:white;
 }
 .table-text {
     font-size:x-small;
     color:white;
 }
-.progress-bar-custom{
+.table2-header {
+    color:black;
+}
+.table2-text {
+    font-size:medium;
+    color:black;
+}
+.progress-bar-custom {
     width:220px;
+}
+.container2 {
+    display:compact;
+    text-align:center;
+}
+.nfl-full {
+    display:inline-block;
+    background-color:lightblue;
+    margin:10px;
 }

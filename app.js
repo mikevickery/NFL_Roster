@@ -1,12 +1,14 @@
 ﻿var defaultPhoto = "images/nfl-player.gif";
 var countr = 0;     // current number of players in roster
+var countn = 0;     // total players on full NFL list
 var countp = 0;     // progress bar counter
 var countt = 0;     // progress bar total records
 var prog = 0;       // progress as a percent 1 to 100
+var players = [];   // JSON download from getPlayers - STILL TEST MODE as of 9/20/15 MSV
 var roster = {
     players:{},
     addPlayer :function (player) {
-        if (player.name && player.position && player.number) {
+        if (player.name) {
             this.players[player.id] = player;
             refreshRoster();
         } else {
@@ -15,21 +17,54 @@ var roster = {
     }
 }
 
-var Player = function (name, position, number, photo, team, status, id) {
+var fullNFL = {
+    players2: {},
+    addPlayer2: function (player2) {
+        this.players2[player2.id] = player2;
+    }
+}
+
+// roster factory
+
+var Player = function (name, position, number, photo, team, status, byeweek, age, id) {
     this.name = name;
     this.position = position;
     this.number = number;
     this.photo = photo;
     this.team = team;
     this.status = status;
+    this.byeweek = byeweek;
+    this.age = age;
     this.id = id;
 }
 
-var PlayerFactory = {
-    _uniqueId:0,
-    createPlayer:function (name, position, number, photo, team, status) {
-        this._uniqueId++;
-        return new Player(name, position, number, photo, team, status, this._uniqueId);
+var PlayerFactory1 = {
+    _uniqueId1: 0,
+    createPlayer: function (name, position, number, photo, team, status, byeweek, age) {
+        this._uniqueId1++;
+        return new Player(name, position, number, photo, team, status, byeweek, age, this._uniqueId1);
+    }
+}
+
+// fullNFL factory
+
+var Player2 = function (name, position, number, photo, team, status, byeweek, age, id) {
+    this.name = name;
+    this.position = position;
+    this.number = number;
+    this.photo = photo;
+    this.team = team;
+    this.status = status;
+    this.byeweek = byeweek;
+    this.age = age;
+    this.id = id;
+}
+
+var PlayerFactory2 = {
+    _uniqueId2: 0,
+    createPlayer2: function (name, position, number, photo, team, status, byeweek, age) {
+        this._uniqueId2++;
+        return new Player2(name, position, number, photo, team, status, byeweek, age, this._uniqueId2);
     }
 }
 
@@ -77,20 +112,77 @@ function listRosterSummary() {
     $("#playerTable").html(htmlTableHeader + htmlTableBody);
 }
 
+function listFullNFL() {
+    var htmlTable2Header = "<tr class='table2-header'>" +
+        "<td width='100px'> </td>" +
+        "<td width='150px'><u>Player Name</u></td>" +
+        "<td width='55px'><u>Position</u></td>" +
+        "<td width='55px'><u>Number</u></td>" +
+        "<td width='45px'><u>Status</u></td>" +
+        "<td width='45px'><u>Team</u></td>" +
+        "<td width='75px'><u>Bye Week</u></td>" +
+        "<td width='55px'><u>Age</u></td></tr>";
+    var htmlTable2Body = "";
+    for (var id in fullNFL.players2) {
+        var player = fullNFL.players2[id];
+        if (!player) {
+
+        }
+        htmlTable2Body = htmlTable2Body + "<tr><td><button class='btn btn-xs btn-warning add-player-list' " +
+            "id='" + player.id + "' type='submit'>Add to My Roster</button></td>" +
+            "<td class='table2-text'>" + player.name + "</td>" +
+            "<td class='table2-text'>" + player.position + "</td>" +
+            "<td class='table2-text'>";
+        if (player.number) {
+            htmlTable2Body = htmlTable2Body + player.number + "</td>";
+        } else {
+            htmlTable2Body = htmlTable2Body + " </td>";
+        }
+        htmlTable2Body = htmlTable2Body + "<td class='table2-text'>" + player.status + "</td>" +
+            "<td class='table2-text'>" + player.team + "</td>" +
+            "<td class='table2-text'>" + player.byeweek + "</td>" +
+            "<td class='table2-text'>"
+        if (player.age) {
+            htmlTable2Body = htmlTable2Body + player.age + "</td></tr>";
+        } else {
+            htmlTable2Body = htmlTable2Body + " </td></tr>";
+        }
+    }
+    $("#fullNFLTable").html(htmlTable2Header + htmlTable2Body);
+}
+
+function removeFullNFL() {
+    var htmlTable2Header = "<tr><td></td></tr>"
+    $("#fullNFLTable").html(htmlTable2Header);
+}
+
 $(function(){
 
-    $('#add-player-form').on('submit',function(event){
+    $('#add-player-form').on('submit', function (event) {
         event.preventDefault();
         var name = $('#playerName').val();
         var position = $('#playerPosition').val();
         var number = $('#playerNumber').val();
-        roster.addPlayer(PlayerFactory.createPlayer(name, position, number, defaultPhoto, "", ""));
+        roster.addPlayer(PlayerFactory1.createPlayer(name, position, number, defaultPhoto, "", "", "", ""));
     });
 
-    $(".player-roster").on('click', '.remove-player', function (event) {
+    $('.nfl-full-list').on('click', '.add-player-list', function (event) {
+        var player = fullNFL.players2[this.id];
+        roster.addPlayer(PlayerFactory1.createPlayer(player.name, player.position, player.number, player.photo, player.team, player.status, player.byeweek, player.age));
+    });
+
+    $('.player-roster').on('click', '.remove-player', function (event) {
         delete roster.players[this.id];
         refreshRoster();
     });
+
+    $('#reload-default-players').on('click', initialPlayerLoad);
+
+    $('#reload-player-images').on('click', loadPlayerImages);
+
+    $('#reload-fullNFL').on('click', listFullNFL);
+
+    $('#remove-fullNFL').on('click', removeFullNFL);
 
 })
 
@@ -102,23 +194,64 @@ function updateProgressBar() {
     $("#progress-update").html(progHtml);
 }
 
-// player image load
+function getPlayers() {
+    var url = "http://bcw-getter.herokuapp.com/?url=";
+    var url2 = "http://api.cbssports.com/fantasy/players/list?version=3.0&SPORT=football&response_format=json";
+    var apiUrl = url + encodeURIComponent(url2);
+    players = [];
+    $.ajax({
+        type: 'GET',
+        url: apiUrl,
+        success: function (response) {
+            console.log(response);
+            response = JSON.parse(response);
+            players = response.players;
+        },
+        error: function (response) {
+            console.log('Whoa! That was a bad request.', response)
+        }
+    })
+    console.log(players.length);
+}
+
 function loadPlayerImages() {
     var url = "http://bcw-getter.herokuapp.com/?url=";
     var url2 = "http://api.cbssports.com/fantasy/players/list?version=3.0&SPORT=football&response_format=json";
     var apiUrl = url + encodeURIComponent(url2);
+    countn = 0;
     countt = 0;
     countp = 0;
     prog = 0;
     $.getJSON(apiUrl, function (data) {
-        var players = data.body.players;
+        var players = {};
+        var fullname2 = "";
+        var position2 = "";
+        var number2 = "";
+        var photo2 = "";
+        var team2 = "";
+        var status2 = "";
+        var byeweek2 = "";
+        var age2 = "";
+        players = data.body.players;
         countt = data.body.players.length * countr;
         players.forEach(function (players) {
+            countn++;
+            fullname2 = players.fullname;
+            position2 = players.position;
+            number2 = players.jersey;
+            photo2 = players.photo;
+            team2 = players.pro_team;
+            status2 = players.pro_status;
+            byeweek2 = players.bye_week;
+            age2 = players.age;
+            if (status2) {
+                fullNFL.addPlayer2(PlayerFactory2.createPlayer2(fullname2, position2, number2, photo2, team2, status2, byeweek2, age2));
+            }
             for (var id in roster.players) {
                 countp++;
                 prog = (countp / countt) * 100;
                 // TESTING progress bar - console.log has 1 to 100 but does not do updateProgressBar function until JSON is finished
-                console.log(countt + ":" + countp + ":" + prog.toFixed(0));
+                // console.log(countt + " : " + countp + " : " + prog.toFixed(0)+"% complete");
                 updateProgressBar();
                 var player = roster.players[id];
                 //console.log("Finding image for " + player.id + " : " + player.name + " photo:" + player.photo);
@@ -135,11 +268,8 @@ function loadPlayerImages() {
     })
 }
 
-$('#reload-default-players').on('click', initialPlayerLoad);
-$('#reload-player-images').on('click', loadPlayerImages);
-
 function setDefaultPlayers(name, position, number) {
-    roster.addPlayer(PlayerFactory.createPlayer(name, position, number, defaultPhoto, "", ""));
+    roster.addPlayer(PlayerFactory1.createPlayer(name, position, number, defaultPhoto, "", "", "", ""));
 }
 
 function initialPlayerLoad() {
@@ -165,6 +295,8 @@ function initialPlayerLoad() {
 initialPlayerLoad();
 listRosterSummary();
 loadPlayerImages();
+listFullNFL();
+//getPlayers();
 
 // *** old innerText approach to setting player ids with an array
 // replaced with objects in object

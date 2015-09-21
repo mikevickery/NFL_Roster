@@ -15,9 +15,6 @@
                 <div class="inlineBlock">
                     <h4 class="banner inlineBlock"><strong>My NFL Roster</strong></h4>
                 </div>
-                <div class="ctr">
-                    <input class="btn btn-default btn-xs button-initial-custom" id="reload-player-images" value="Refresh" />
-                </div>
             </div>
             <div class="panel-body nfl-logo">
                 <div id="progress-update">
@@ -92,7 +89,26 @@
             <!-- END: footer -->
 
         </div>
+<!-- Full NFL Roster begins -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="inlineBlock">
+                    <h4 class="banner inlineBlock"><strong>Full NFL Roster</strong></h4>
+                    <input class="btn btn-default btn-xs button-default-custom" id="reload-fullNFL" value="Show Full NFL" />
+                    <input class="btn btn-default btn-xs button-default-custom" id="remove-fullNFL" value="Hide List" />
+                </div>
+            </div>
+            <div class="panel-body nfl-full">
+                <table border="0" cellspacing="5" cellpadding="0" class="nfl-full-list" id="fullNFLTable"> </table>
+            </div>
+            <!-- BEGIN: footer of Full NFL Roster-->
+            <div class="panel-footer">
+                End of Full NFL Roster
+            </div>
+            <!-- END: footer of Full NFL Roster -->
+        </div>
     </div>
+<!-- Full NFL Roster ends -->
     <script type="text/javascript" src="https://rawgithub.com/yesmeck/jquery-jsonview/master/dist/jquery.jsonview.js"></script>
     <script type="text/javascript" src="app.js"></script>
 </body>
