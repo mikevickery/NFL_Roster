@@ -13,7 +13,7 @@ var roster = {
     addPlayer :function (player) {
         if (player.name) {
             this.players[player.id] = player;
-            refreshRoster();
+            reloadPlayerCards();
         } else {
             alert("Unable to Add Player...likely missing or invalid data.");
         }
@@ -71,7 +71,19 @@ var PlayerFactory2 = {
     }
 }
 
-function refreshRoster(){
+function updateProgressBar(whatPercent) {
+    var progHtml = '<div class="progress"><div class="progress-bar ' +
+        'progress-bar-info progress-bar-striped active"' +
+        'role="progressbar" aria-valuenow="' + whatPercent + '" aria-valuemin="0" ' +
+        'aria-valuemax="100" style="width:' + whatPercent + '%">Refresh of ' +
+        'Roster - ' + whatPercent + '% Complete</div></div>';
+    $("#progress-update").html(progHtml);
+    if (whatPercent > 99) {
+        $('.progress-bar-striped').removeClass('active');
+    }
+}
+
+function reloadPlayerCards(){
     var refreshDiv = $(".player-roster");
     refreshDiv.html('');
     countr = 0;
@@ -79,6 +91,13 @@ function refreshRoster(){
         var player = roster.players[id];
         if (!player) {
 
+        }
+        // removes duplicate players (if name matches) from roster
+        for (var id in roster.players) {
+            var playerDup = roster.players[id];
+            if (player.name === playerDup.name && player.id != playerDup.id) {
+                delete roster.players[playerDup.id];
+            }
         }
         var html = '<div class="player-card inlineBlock">' +
             '<button class="btn btn-xs btn-danger remove-player button-remove-custom' +
@@ -101,10 +120,10 @@ function refreshRoster(){
         refreshDiv.append(html);
         countr++;
     }
-    listRosterSummary();
+    refreshRosterSummary();
 }
 
-function listRosterSummary() {
+function refreshRosterSummary() {
     var htmlTableHeader = "<tr class='table-header'>" +
         "<td colspan='5' align='middle'><b>Roster Summary</b></td></tr>" +
         "<tr class='table-header'>" +
@@ -210,23 +229,15 @@ $(function(){
 
     $('.nfl-full-list').on('click', '.add-player-list', function (event) {
         var player = fullNFL.players2[this.id];
-
         $(document).on('click', '.add-player-list', function () {
             $(this).remove();
         });
-
-        //$(document).ready(function() {
-        //    $('.add-player-list').click(function () {
-        //        $(this).fadeOut('fast');
-        //    });
-        //});
-
         roster.addPlayer(PlayerFactory1.createPlayer(player.name, player.position, player.number, player.photo, player.team, player.status, player.byeweek, player.age));
     });
 
     $('.player-roster').on('click', '.remove-player', function (event) {
         delete roster.players[this.id];
-        refreshRoster();
+        reloadPlayerCards();
     });
 
     $.fn.scrollView = function () {
@@ -238,23 +249,11 @@ $(function(){
     };
 
     $('#reload-default-players').on('click', initialPlayerLoad);
-    $('#reload-player-images').on('click', loadPlayerImages);
+    $('#reload-player-images').on('click', refreshFromAPI);
     $('#reload-fullNFL').on('click', listFullNFL2);
     $('#remove-fullNFL').on('click', removeFullNFL);
 
 })
-
-function updateProgressBar(progress) {
-    var progHtml = '<div class="progress"><div class="progress-bar ' +
-        'progress-bar-info progress-bar-striped active"' +
-        'role="progressbar" aria-valuenow="' + progress + '" aria-valuemin="0" ' +
-        'aria-valuemax="100" style="width:' + progress + '%">Refresh of ' +
-        'Roster - ' + progress + '% Complete</div></div>';
-    $("#progress-update").html(progHtml);
-    if (progress > 99) {
-        $('.progress-bar-striped').removeClass('active');
-    }
-  }
 
 //function getPlayers() {
 //    var url = "http://bcw-getter.herokuapp.com/?url=";
@@ -311,7 +310,15 @@ var playerService = function () {
     }   // encapsulated in return of playerService
 }
 
-function loadPlayerImages() {
+function refreshFromAPI() {
+    getFromAPI();
+    // progress bar is not not tracking getJSON
+    for (var i = 0; i <= 100; i++) {
+        updateProgressBar(i);
+    }
+}
+
+function getFromAPI() {
     var url = "http://bcw-getter.herokuapp.com/?url=";
     var url2 = "http://api.cbssports.com/fantasy/players/list?version=3.0&SPORT=football&response_format=json";
     var apiUrl = url + encodeURIComponent(url2);
@@ -319,7 +326,6 @@ function loadPlayerImages() {
     countt = 0;
     countp = 0;
     prog = 0;
-    updateProgressBar('50');
     $.getJSON(apiUrl, function (data) {
         var players = {};
         var fullname2 = "";
@@ -344,13 +350,15 @@ function loadPlayerImages() {
             age2 = players.age;
             if (status2) {
                 fullNFL.addPlayer2(PlayerFactory2.createPlayer2(fullname2, position2, number2, photo2, team2, status2, byeweek2, age2));
+            } else if (position2 === "ST") {
+                console.log("Team Name: " + fullname2 + "|pro_team abbr:" + team2);
             }
             for (var id in roster.players) {
                 countp++;
                 prog = (countp / countt) * 100;
                 // TESTING progress bar - console.log has 1 to 100 but does not do updateProgressBar function until JSON is finished
                 // console.log(countt + " : " + countp + " : " + prog.toFixed(0)+"% complete");
-                updateProgressBar(prog.toFixed(0));
+                // updateProgressBar(prog.toFixed(0));
                 var player = roster.players[id];
                 //console.log("Finding image for " + player.id + " : " + player.name + " photo:" + player.photo);
                 if (players.fullname === player.name) {
@@ -359,12 +367,13 @@ function loadPlayerImages() {
                     player.position = players.position;
                     player.number = players.jersey;
                     player.status = players.pro_status;
-                    refreshRoster();
+                    reloadPlayerCards();
                 }
             }
         })
     })
-    updateProgressBar(prog.toFixed(0));
+    // updateProgressBar('100');
+    // updateProgressBar(prog.toFixed(0));
 }
 
 function setDefaultPlayers(name, position, number) {
@@ -388,11 +397,13 @@ function initialPlayerLoad() {
     setDefaultPlayers("Seth Roberts", "BN-WR", "10");
     setDefaultPlayers("Marcel Reece", "BN-FB", "45");
     setDefaultPlayers("Roy Helu", "BN-RB", "26");
+    setDefaultPlayers("Jared Abbrederis", "WR", "84");
+    setDefaultPlayers("Husain Abdullah", "RB", "39");
 }
 
 // functions done at launch...also linked to buttons in footer panel
 $(".nfl-full-container").fadeOut('slow');   // hide until requested by user
 //initialPlayerLoad();
-listRosterSummary();
-//loadPlayerImages();
+refreshRosterSummary();
+//refreshFromAPI();
 //listFullNFL2();
