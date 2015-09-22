@@ -1,4 +1,6 @@
-﻿var defaultPhoto = "images/nfl-player.gif";
+﻿// NFL_Roster - created September 2015 - app.js 
+
+var defaultPhoto = "images/nfl-player.gif";
 var unknownPhoto = "https://auth.cbssports.com/images/players/unknown-player-170x170.png";
 var countr = 0;     // current number of players in roster
 var countn = 0;     // total players on full NFL list
@@ -129,6 +131,7 @@ function listRosterSummary() {
 }
 
 function listFullNFL2() {
+    var foundInRoster = false;
     var htmlTable2Header = '<div class="t-row">' +
         '<div class="t-row-cell"> </div>' +
         '<div class="t-row-cell1"><u>Player Name</u></div>' +
@@ -149,10 +152,23 @@ function listFullNFL2() {
         } else {
             htmlTable2Body = htmlTable2Body + '<div class="t-row">';
         }
-        htmlTable2Body = htmlTable2Body + '<div class="t-row-cell">' +
-            '<button class="btn btn-xs btn-warning add-player-list" id="' + player.id + '" ' +
-            'type="submit">Add to My Roster</button></div>' +
-            '<div class="t-row-cell1">' + player.name + '</div>' +
+        foundInRoster = false;
+        for (var id in roster.players) {
+            var player3 = roster.players[id];
+            if (player3.name === player.name) {
+                foundInRoster = true;
+                break;
+            }
+        }
+        if (foundInRoster) {
+            htmlTable2Body = htmlTable2Body + '<div class="t-row-cell"> </div>';
+        } else {
+            htmlTable2Body = htmlTable2Body + '<div class="t-row-cell">' +
+                '<button class="btn btn-xs btn-warning ' +
+                'add-player-list" id="' + player.id + '" ' +
+                'type="submit">Add to My Roster</button></div>';
+        }
+        htmlTable2Body = htmlTable2Body + '<div class="t-row-cell1">' + player.name + '</div>' +
             '<div class="t-row-cell2">' + player.position + '</div>' +
             '<div class="t-row-cell2">';
         if (player.number) {
@@ -188,11 +204,23 @@ $(function(){
         var name = $('#playerName').val();
         var position = $('#playerPosition').val();
         var number = $('#playerNumber').val();
+        $('#button-add-player').fadeIn('fast');
         roster.addPlayer(PlayerFactory1.createPlayer(name, position, number, defaultPhoto, "", "", "", ""));
     });
 
     $('.nfl-full-list').on('click', '.add-player-list', function (event) {
         var player = fullNFL.players2[this.id];
+
+        $(document).on('click', '.add-player-list', function () {
+            $(this).remove();
+        });
+
+        //$(document).ready(function() {
+        //    $('.add-player-list').click(function () {
+        //        $(this).fadeOut('fast');
+        //    });
+        //});
+
         roster.addPlayer(PlayerFactory1.createPlayer(player.name, player.position, player.number, player.photo, player.team, player.status, player.byeweek, player.age));
     });
 
@@ -210,41 +238,77 @@ $(function(){
     };
 
     $('#reload-default-players').on('click', initialPlayerLoad);
-
     $('#reload-player-images').on('click', loadPlayerImages);
-
     $('#reload-fullNFL').on('click', listFullNFL2);
-
     $('#remove-fullNFL').on('click', removeFullNFL);
 
 })
 
-function updateProgressBar() {
-    var progHtml = '<div class="progress">' +
-        '<div class="progress-bar progress-bar-info progress-bar-striped active"' +
-        'role="progressbar" aria-valuenow="' + prog.toFixed(0) + '" aria-valuemin="0" aria-valuemax="100" ' +
-        'style="width:' + prog.toFixed(0) + '%">Refreshing Roster - ' + prog.toFixed(0) + '% Complete</div></div>';
+function updateProgressBar(progress) {
+    var progHtml = '<div class="progress"><div class="progress-bar ' +
+        'progress-bar-info progress-bar-striped active"' +
+        'role="progressbar" aria-valuenow="' + progress + '" aria-valuemin="0" ' +
+        'aria-valuemax="100" style="width:' + progress + '%">Refresh of ' +
+        'Roster - ' + progress + '% Complete</div></div>';
     $("#progress-update").html(progHtml);
-}
+    if (progress > 99) {
+        $('.progress-bar-striped').removeClass('active');
+    }
+  }
 
-function getPlayers() {
-    var url = "http://bcw-getter.herokuapp.com/?url=";
-    var url2 = "http://api.cbssports.com/fantasy/players/list?version=3.0&SPORT=football&response_format=json";
-    var apiUrl = url + encodeURIComponent(url2);
-    players = [];
-    $.ajax({
-        type: 'GET',
-        url: apiUrl,
-        success: function (response) {
-            console.log(response);
-            response = JSON.parse(response);
-            players = response.players;
+//function getPlayers() {
+//    var url = "http://bcw-getter.herokuapp.com/?url=";
+//    var url2 = "http://api.cbssports.com/fantasy/players/list?version=3.0&SPORT=football&response_format=json";
+//    var apiUrl = url + encodeURIComponent(url2);
+//    players = [];
+//    $.ajax({
+//        type: 'GET',
+//        url: apiUrl,
+//        success: function (response) {
+//            console.log(response);
+//            response = JSON.parse(response);
+//            players = response.players;
+//        },
+//        error: function (response) {
+//            console.log('Whoa! That was a bad request.', response)
+//        }
+//    })
+//    console.log(players.length);
+//}
+
+// from Jake - 09-21-2015 - encapsulating code
+var playerService = function () {
+    var _players = [];
+    return {
+        loadPlayers: function (cb) {
+            var url = "http://bcw-getter.herokuapp.com/?url=";
+            var url2 = "http://api.cbssports.com/fantasy/players/list?version=3.0&SPORT=football&response_format=json";
+            var apiUrl = url + encodeURIComponent(url2);
+            $.getJSON(apiUrl, function (response) {
+                _players = response.body.players;
+                cb();
+            })
         },
-        error: function (response) {
-            console.log('Whoa! That was a bad request.', response)
+        getPlayers: function () {
+            return _players.slice();
+        },
+        getPlayersByTeam: function (team) {
+            var requestedTeam = _players.filter(function (player) {
+                if (player.pro_team === team) {
+                    return true;
+                }
+            })
+            return requestedTeam;
+        },
+        getPlayersByPosition: function (position) {
+            var requestedPosition = _players.filter(function (player) {
+                if (player.position === position) {
+                    return true;
+                }
+            })
+            return requestedPosition;
         }
-    })
-    console.log(players.length);
+    }   // encapsulated in return of playerService
 }
 
 function loadPlayerImages() {
@@ -255,6 +319,7 @@ function loadPlayerImages() {
     countt = 0;
     countp = 0;
     prog = 0;
+    updateProgressBar('50');
     $.getJSON(apiUrl, function (data) {
         var players = {};
         var fullname2 = "";
@@ -285,7 +350,7 @@ function loadPlayerImages() {
                 prog = (countp / countt) * 100;
                 // TESTING progress bar - console.log has 1 to 100 but does not do updateProgressBar function until JSON is finished
                 // console.log(countt + " : " + countp + " : " + prog.toFixed(0)+"% complete");
-                updateProgressBar();
+                updateProgressBar(prog.toFixed(0));
                 var player = roster.players[id];
                 //console.log("Finding image for " + player.id + " : " + player.name + " photo:" + player.photo);
                 if (players.fullname === player.name) {
@@ -299,6 +364,7 @@ function loadPlayerImages() {
             }
         })
     })
+    updateProgressBar(prog.toFixed(0));
 }
 
 function setDefaultPlayers(name, position, number) {
@@ -326,24 +392,7 @@ function initialPlayerLoad() {
 
 // functions done at launch...also linked to buttons in footer panel
 $(".nfl-full-container").fadeOut('slow');   // hide until requested by user
-initialPlayerLoad();
+//initialPlayerLoad();
 listRosterSummary();
-loadPlayerImages();
+//loadPlayerImages();
 //listFullNFL2();
-//getPlayers();
-
-// *** old innerText approach to setting player ids within an array for use on a button
-// replaced with objects in object
-//function setIDs() {
-//    var str1 = "";
-//    var str2 = "";
-//    var x = 0;
-//    for (var i = 0; i < team.length; i++) {
-//        x = i + 1;
-//        str1 = "Player" + x + ".l1";
-//        str2 = "Player" + x + ".l2";
-//        document.getElementById(str1).innerText = team[i].name;
-//        document.getElementById(str2).innerText = team[i].position + " #" + team[i].number;
-//    }
-//}
-//setIDs();
