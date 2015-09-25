@@ -151,8 +151,9 @@ function refreshRosterSummary() {
 
 function listFullNFL2() {
     var foundInRoster = false;
-    var htmlTable2Header = '<div class="t-row">' +
+    var htmlTable2Header = '<div class="t-row-header">' +
         '<div class="t-row-cell"> </div>' +
+        '<div class="t-row-cell2"> </div>' +
         '<div class="t-row-cell1"><u>Player Name</u></div>' +
         '<div class="t-row-cell2"><u>Position</u></div>' +
         '<div class="t-row-cell2"><u>Number</u></div>' +
@@ -187,7 +188,14 @@ function listFullNFL2() {
                 'add-player-list" id="' + player.id + '" ' +
                 'type="submit">Add to My Roster</button></div>';
         }
-        htmlTable2Body = htmlTable2Body + '<div class="t-row-cell1">' + player.name + '</div>' +
+        htmlTable2Body = htmlTable2Body + '<div class="t-row-cell2">';
+        if (!player.photo || player.photo === unknownPhoto) {
+            htmlTable2Body = htmlTable2Body + '<img src="' + defaultPhoto + '" class="card1" />';
+        } else {
+            htmlTable2Body = htmlTable2Body + '<img src="' + player.photo + '" class="card1" />';
+        }
+        htmlTable2Body = htmlTable2Body + '</div>' +
+            '<div class="t-row-cell1">' + player.name + '</div>' +
             '<div class="t-row-cell2">' + player.position + '</div>' +
             '<div class="t-row-cell2">';
         if (player.number) {
@@ -206,8 +214,6 @@ function listFullNFL2() {
         }
     }
     $("#fullNFLlist2").html(htmlTable2Header + htmlTable2Body);
-    $(".nfl-full-container").fadeIn('slow');
-    $(".container-footer").scrollView();
 }
 
 function removeFullNFL() {
@@ -247,6 +253,62 @@ $(function(){
             }, 1000);
         });
     };
+
+    // TOGGLES: default toggles to display container1 at load
+    $( document ).ready(function() {
+        // TOGGLES: initialize the 3 toggles
+        $('.toggle1').toggles();
+        $('.toggle2').toggles();
+        $('.toggle3').toggles();
+        $('.toggle1').toggles({
+            drag: false,
+            on: true
+        });
+        $('.container1').fadeIn('slow');
+        $('.toggle2').toggles({
+            drag: false,
+            on: false
+        });
+        $('.container2').fadeOut('slow');
+        $('.toggle3').toggles({
+            drag: false,
+            on: false
+        });
+        $('.container3').fadeOut('slow');
+    });
+
+    // TOGGLES: Getting notified of changes, and the new state:
+    $('.toggle1').on('toggle', function (e, active) {
+        if (active) {
+            $(".container1").fadeIn('slow');
+            $(".container1").scrollView();
+        } else {
+            $(".container1").fadeOut('slow');
+        }
+    });
+    $('.toggle2').on('toggle', function (e, active) {
+        if (active) {
+            $(".container2").fadeIn('slow');
+            $(".container2").scrollView();
+        } else {
+            $(".container2").fadeOut('slow');
+        }
+    });
+    $('.toggle3').on('toggle', function (e, active) {
+        if (active) {
+            listFullNFL2();
+            $(".container3").fadeIn('slow');
+            $(".container3").scrollView();
+        } else {
+            $(".container3").fadeOut('slow');
+            removeFullNFL();
+        }
+    });
+
+    //  stickyjs.com -->
+    $(window).load(function(){
+        $("#sticker").sticky({ topSpacing: 0, center:true, className:"sticky-menu" });
+    });
 
     $('#reload-default-players').on('click', initialPlayerLoad);
     $('#reload-player-images').on('click', refreshFromAPI);
@@ -402,8 +464,9 @@ function initialPlayerLoad() {
 }
 
 // functions done at launch...also linked to buttons in footer panel
-$(".nfl-full-container").fadeOut('slow');   // hide until requested by user
+//$(".nfl-full-container").fadeOut('slow');
+// hide until requested by user
 //initialPlayerLoad();
-refreshRosterSummary();
+//refreshRosterSummary();
 //refreshFromAPI();
 //listFullNFL2();

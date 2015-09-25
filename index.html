@@ -7,13 +7,111 @@
     <link rel="stylesheet" href="https://rawgithub.com/yesmeck/jquery-jsonview/master/dist/jquery.jsonview.css" />
     <link href="site.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="jquery-2.1.4.js"></script>
+    <script type="text/javascript" src="bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <!-- https://jqueryui.com/droppable/#shopping-cart -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <!--<script src="//code.jquery.com/jquery-1.10.2.js"></script>-->
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <!-- TOGGLE SWITCH http://simontabor.com/labs/toggles/ -->
+    <link rel="stylesheet" href="jquery-toggles-master/css/toggles.css">
+    <link rel="stylesheet" href="jquery-toggles-master/css/themes/toggles-modern.css">
 </head>
-<body><br />
-    <div class="container">
-        <div class="panel panel-default">
+<body>
+    <!-- BEGIN OF: sticky VIEW menu of toggles in upper right corner -->
+    <div id="sticker" class="sticky-menu">
+        <div class="btn btn-info button-view-custom inlineBlock">
+            <span class="viewMenu1-text"> Roster View </span>
+            <span class="glyphicon glyphicon-th-list"></span>
+            <span class="viewMenu1-text">&#32; Dynamic: </span>
+            <div class="toggle1 toggle-modern inlineBlock" id="view-menu1"></div>
+            <span class="viewMenu1-text"> &#32;Cards: </span>
+            <div class="toggle2 toggle-modern inlineBlock" id="view-menu2"></div>
+            <span class="viewMenu1-text"> &#32;NFL: </span>
+            <div class="toggle3 toggle-modern inlineBlock" id="view-menu3"></div>
+        </div>
+    </div>
+
+    <!-- BEGIN OF: dynamic container -->
+    <br />
+    <div class="panel container1">
+        <div class="panel-heading">
+            <div>
+                <h4 class="banner inlineBlock stay-left"><strong>My Dynamic Roster</strong></h4>
+            </div>
+        </div>
+        <div class="panel-body panel-body-container1 nfl-logo">
+            <div class="panel panel-default player-list-box inlineBlock">
+                <table border="0" cellspacing="5" cellpadding="0" id="playerTable"> </table>
+            </div>
+            <div class="panel panel-default addBox inlineBlock">
+                <div class="panel-body inlineBlock">
+                    <h4 class="banner ctr"><strong>Add Player to Roster</strong></h4>
+                    <form id="add-player-form" action="nothing right now" class="navbar-form">
+                        <div class="form-group">
+                            <label for="playerName">Name : </label>
+                            <input id="playerName" type="text" value="" />
+                        </div><br />
+                        <div class="form-group">
+                            <label for="playerPosition">Position : </label>
+                            <input id="playerPosition" type="text" value="" />
+                        </div><br />
+                        <div class="form-group">
+                            <label for="playerNumber">Number : </label>
+                            <input id="playerNumber" type="text" value="" />
+                        </div><br />
+                        <div class="inlineBlock">
+                            <button class="btn btn-default button-add-custom" id="button-add-player" type="submit">Add Player</button>
+                        </div>
+                        <div class="inlineBlock">
+                            <input class="btn btn-default button-reset-custom" type="reset" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- progress bar displayed here -->
+            <!--<div id="progress-update" class="progress-bar-custom">
+            </div>-->
+        </div>
+        <!-- BEGIN: footer -->
+        <div class="panel-footer container-footer1">
+            <div class="inlineBlock">
+                <strong>Starters</strong>
+                <ul>
+                    <li>1 Quarterback (QB)</li>
+                    <li>2 Running Backs (RB)</li>
+                </ul>
+            </div>
+            <div class="inlineBlock">
+                <ul>
+                    <li>2 Wide Receivers (WR)</li>
+                    <li>1 Flex RB/WR/TEs (RB/WR/TE)</li>
+                    <li>1 Tight End (TE)</li>
+                </ul>
+            </div>
+            <div class="inlineBlock">
+                <ul>
+                    <li>1 Placekicker (K)</li>
+                    <li>1 Team Defense/Special Teams (D/ST)</li>
+                    <li>7 Bench (BN)</li>
+                </ul>
+            </div>
+            <div class="inlineBlock">
+                <input class="btn btn-default btn-xs button-default-custom" id="reload-default-players" value="Load 18 Players" />
+                <input class="btn btn-default btn-xs button-initial-custom" id="reload-player-images" value="Refresh" />
+                <!--<input class="btn btn-default btn-xs button-fullNFL-custom" id="reload-fullNFL" value="Display Full NFL Player List Below" />-->
+            </div>
+            <!-- END: footer -->
+        </div>
+    </div>
+ 
+    <!-- END OF: dynamic container -->
+
+    <!-- BEGIN OF: player card container -->
+    <div class="container2">
+        <div class="panel">
             <div class="panel-heading">
-                <div class="inlineBlock">
-                    <h4 class="banner inlineBlock"><strong>My NFL Roster</strong></h4>
+                <div>
+                    <h4 class="banner inlineBlock stay-left"><strong>My Player Cards</strong></h4>
                 </div>
             </div>
             <div class="panel-body nfl-logo">
@@ -21,100 +119,41 @@
                     <!-- multiple player cards inserted here -->
                 </div>
             </div>
-            <div class="panel-body nfl-logo">
-                <table>
-                    <tr>
-                        <td>
-                            <div class="panel panel-default player-list-box inlineBlock">
-                                <table border="0" cellspacing="5" cellpadding="0" id="playerTable"> </table>
-                            </div>
-                        </td>
-                        <td>
-                            <!-- BEGIN: inline 'Add Player to Roster' form -->
-                            <div class="panel panel-default addBox inlineBlock">
-                                <div class="panel-body inlineBlock">
-                                    <h4 class="banner ctr"><strong>Add Player to Roster</strong></h4>
-                                    <form id="add-player-form" action="nothing right now" class="navbar-form">
-                                        <div class="form-group">
-                                            <label for="playerName">Name : </label>
-                                            <input id="playerName" type="text" value="" />
-                                        </div><br />
-                                        <div class="form-group">
-                                            <label for="playerPosition">Position : </label>
-                                            <input id="playerPosition" type="text" value="" />
-                                        </div><br />
-                                        <div class="form-group">
-                                            <label for="playerNumber">Number : </label>
-                                            <input id="playerNumber" type="text" value="" />
-                                        </div><br />
-                                        <div class="inlineBlock">
-                                            <button class="btn btn-default button-add-custom" id="button-add-player" type="submit">Add Player</button>
-                                        </div>
-                                        <div class="inlineBlock">
-                                            <input class="btn btn-default button-reset-custom" type="reset" />
-                                        </div>
-                                    </form>
-                                </div>
-                                <!-- END: inline 'Add Player to Roster' form -->
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-                <div id="progress-update">
-                    <!-- progress bar displayed here -->
-                </div>
-            </div>
             <!-- BEGIN: footer -->
-            <div class="panel-footer container-footer">
-                <div class="inlineBlock"><strong>Starters</strong>
-                    <ul><li>1 Quarterback (QB)</li>
-                    <li>2 Running Backs (RB)</li></ul>
-                </div>
-                <div class="inlineBlock"><ul><li>2 Wide Receivers (WR)</li>
-                    <li>1 Flex RB/WR/TEs (RB/WR/TE)</li>
-                    <li>1 Tight End (TE)</li></ul>
-                </div>            
-                <div class="inlineBlock">
-                    <ul>
-                        <li>1 Placekicker (K)</li>
-                        <li>1 Team Defense/Special Teams (D/ST)</li>
-                        <li>7 Bench (BN)</li>
-                    </ul>
-                </div>
-                <div class="inlineBlock">
-                    <input class="btn btn-default btn-xs button-default-custom" id="reload-default-players" value="Load 18 Players" />
-                    <input class="btn btn-default btn-xs button-initial-custom" id="reload-player-images" value="Refresh" />
-                    <input class="btn btn-default btn-xs button-fullNFL-custom" id="reload-fullNFL" value="Display Full NFL Player List Below" />
-                </div>
+            <div class="panel-footer container-footer2">
             </div>
-            <!-- END: footer -->
-
         </div>
-<!-- Full NFL Roster begins -->
-        <div class="panel panel-default nfl-full-container">
-            <div class="panel-heading">
-                <div class="inlineBlock">
-                    <h4 class="banner inlineBlock"><strong>Full NFL Roster</strong></h4>
-                    <input class="btn btn-default btn-xs button-default-custom" id="remove-fullNFL" value="Hide List" />
-                </div>
-            </div>
-            <!--<div class="panel-body nfl-full">
-                <table border="0" cellspacing="5" cellpadding="0" class="nfl-full-list" id="fullNFLTable"> </table>
-            </div>-->
-            <div class="panel-body nfl-full2">
-                <div id="fullNFLlist2" class="nfl-full-list">
-
-                </div>
-            </div>
-            <!-- BEGIN: footer of Full NFL Roster-->
-            <div class="panel-footer">
-                End of Full NFL Roster
-            </div>
-            <!-- END: footer of Full NFL Roster -->
-        </div>
+        <!-- END: footer -->
     </div>
-<!-- Full NFL Roster ends -->
+    <!-- END OF: player card container -->
+
+    <!-- BEGIN OF: Full NFL Roster container -->
+    <div class="panel nfl-full-container container3">
+        <div class="panel-heading">
+            <div class="inlineBlock">
+                <h4 class="banner inlineBlock stay-left"><strong>Full NFL Roster</strong></h4>
+                <!--<input class="btn btn-default btn-xs button-default-custom" id="remove-fullNFL" value="Hide List" />-->
+            </div>
+        </div>
+        <div class="panel-body nfl-full2">
+            <div id="fullNFLlist2" class="nfl-full-list">
+
+            </div>
+        </div>
+        <!-- BEGIN: footer of Full NFL Roster-->
+        <div class="panel-footer">
+            End of Full NFL Roster
+        </div>
+        <!-- END: footer of Full NFL Roster -->
+    </div>
+    <!-- END OF: Full NFL Roster container -->
+
+    <!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>-->
+    <script type="text/javascript" src="jquery.sticky.js"></script>
+    <!-- Full NFL Roster ends -->
     <script type="text/javascript" src="https://rawgithub.com/yesmeck/jquery-jsonview/master/dist/jquery.jsonview.js"></script>
     <script type="text/javascript" src="app.js"></script>
+    <!-- TOGGLE SWITCH http://simontabor.com/labs/toggles/ -->
+    <script type="text/javascript" src="jquery-toggles-master/toggles.js"></script>
 </body>
 </html>

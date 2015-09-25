@@ -1,5 +1,9 @@
 ﻿body {
     background-color:royalblue;
+    margin:4px;
+}
+.invisable {
+    display:none;
 }
 .nfl-logo {
     background-image: url("images/nfl-logo.gif");
@@ -11,6 +15,9 @@
     display:inline-block;
     border: 1px solid blue;
     margin:8px;
+}
+.card1 {
+    width:50px;
 }
 .card2 {
     width:100px;
@@ -31,6 +38,10 @@ input {
     display:inline-block;
     text-align:right;
     width:280px;
+    float:right;
+}
+.stay-left {
+    float:left;
 }
 .player-list-box {
     display:inline-block;
@@ -39,8 +50,16 @@ input {
     border-color:darkblue;
     background-color:darkblue;
 }
+.panel-heading {
+    height:43px;
+}
 .panel-footer {
     font-size: x-small;
+}
+.panel-body-container1 {
+    border-width:8px;
+    border-color:darkblue;
+    background-color:darkblue;
 }
 .inlineBlock {
     display:inline-block;
@@ -78,6 +97,14 @@ input {
     background-color:red;
     border:1px darkblue solid;
 }
+.button-view-custom {
+    width:445px;
+}
+.viewMenu1-text {
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size:18px;
+    align-content:center;
+}
 .table-header {
     color:white;
 }
@@ -93,7 +120,7 @@ input {
     color:black;
 }
 .progress-bar-custom {
-    width:220px;
+    width:100%;
 }
 .container2 {
     display:compact;
@@ -103,6 +130,12 @@ input {
     display:inline-block;
     background-color:lightblue;
     margin:10px;
+}
+.t-row {
+    height:52px;
+}
+.t-row-header {
+    height:42px;
 }
 .t-row-cell {
     display:inline-block;
@@ -118,4 +151,7 @@ input {
 }
 .t-row-shade {
     background-color:lightblue;
+}
+#sticker {
+    float:right;
 }
