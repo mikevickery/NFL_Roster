@@ -2,6 +2,8 @@
 
 var defaultPhoto = "images/nfl-player.gif";
 var unknownPhoto = "https://auth.cbssports.com/images/players/unknown-player-170x170.png";
+var teams = [];
+
 var roster = {
     players:{},
     addPlayer :function (player) {
@@ -105,26 +107,25 @@ function reloadPlayerCards(){
 
 function refreshRosterSummary() {
     var htmlTableHeader = "<tr class='table-header'>" +
-        "<td colspan='5' align='middle'><b>Roster Summary</b></td></tr>" +
+        "<td colspan='3' align='middle'><b>Roster Summary</b></td></tr>" +
         "<tr class='table-header'>" +
-        "<td width='90px'><u>Name</u></td>" +
+        "<td width='100px'><u>Name</u></td>" +
         "<td width='55px'><u>Position</u></td>" +
-        "<td width='55px'><u>Number</u></td>" +
-        "<td width='55px'><u>Status</u></td>" +
-        "<td width='55px'><u>Team</u></td></tr>";
+        "<td width='75px'><u>Team</u></td></tr>";
     var htmlTableBody = "";
     for (var id in roster.players) {
         var player = roster.players[id];
         htmlTableBody = htmlTableBody + "<tr>" +
             "<td class='table-text'>" + player.name + "</td>" +
             "<td class='table-text'>" + player.position + "</td>";
-        if (!player.number) {
-            htmlTableBody = htmlTableBody + "<td class='table-text'> </td>";
-        } else {
-            htmlTableBody = htmlTableBody + "<td class='table-text'>" + player.number + "</td>";
+        var teamName = player.team;
+        for (var i = 0 ; i < teams.length; i++) {
+            if (player.team === teams[i].abbrv) {
+                teamName = teams[i].name;
+                break;
+            }
         }
-        htmlTableBody = htmlTableBody + "<td class='table-text'>" + player.status + "</td>" +
-            "<td class='table-text'>" + player.team + "</td></tr>";
+        htmlTableBody = htmlTableBody + "<td class='table-text'>" + teamName + "</td></tr>";
     }
     $("#playerTable").html(htmlTableHeader + htmlTableBody);
 }
@@ -295,6 +296,7 @@ $(function () {
 
     $('#reload-default-players').on('click', initialPlayerLoad);
     $('#reload-player-images').on('click', refreshFromAPI);
+    $('#reload-team-members').on('click', refreshTeamMembers);
     $('#reload-fullNFL').on('click', listFullNFL2);
     $('#remove-fullNFL').on('click', removeFullNFL);
 
@@ -352,9 +354,11 @@ function refreshFromAPI() {
         var status2 = "";
         var byeweek2 = "";
         var age2 = "";
+        teams = [];
+        var teamName = "";
         players = data.body.players;
         players.forEach(function (players) {
-            fullname2 = players.fullname;
+            fullname2 = players.lastname + ", " + players.firstname;
             position2 = players.position;
             number2 = players.jersey;
             photo2 = players.photo;
@@ -362,14 +366,15 @@ function refreshFromAPI() {
             status2 = players.pro_status;
             byeweek2 = players.bye_week;
             age2 = players.age;
+            teamName = players.fullname;
             if (status2) {
                 fullNFL.addPlayer2(PlayerFactory2.createPlayer2(fullname2, position2, number2, photo2, team2, status2, byeweek2, age2));
-            //} else if (position2 === "ST") {
-            //    console.log("Team Name: " + fullname2 + "|pro_team abbr:" + team2);
+            } else if (position2 === "ST") {
+                teams.push({ abbrv: team2, name: teamName, members: [], count: 0 });
             }
             for (var id in roster.players) {
                 var player = roster.players[id];
-                if (players.fullname === player.name) {
+                if (fullname2 === player.name) {
                     player.photo = players.photo;
                     player.team = players.pro_team;
                     player.position = players.position;
@@ -382,29 +387,47 @@ function refreshFromAPI() {
     })
 }
 
+function refreshTeamMembers() {
+    for (var i = 0;i < teams.length;i++) {
+        //console.log(teams[i].abbrv+"=====================================================");
+        for (var id in fullNFL.players2) {
+            var player = fullNFL.players2[id];
+            if (!player) {
+
+            }
+            if (teams[i].abbrv === player.team) {
+                teams[i].count++;
+                teams[i].members.push(player.id);
+                //console.log(teams[i].abbrv + ":" + teams[i].name + ":" + player.team + " id:" + player.id + " n:" + player.name);
+                //console.log("Members : " + teams[i].count + " of " + teams[i].name);
+            }
+        }
+    }
+}
+
 function setDefaultPlayers(name, position, number) {
     roster.addPlayer(PlayerFactory1.createPlayer(name, position, number, defaultPhoto, "", "", "", ""));
 }
 
 function initialPlayerLoad() {
-    setDefaultPlayers("Russell Wilson", "QB", "3");
-    setDefaultPlayers("Reggie Bush", "RB", "23");
-    setDefaultPlayers("C.J. Anderson", "RB", "22");
-    setDefaultPlayers("Jeremy Maclin", "WR", "19");
-    setDefaultPlayers("Doug Baldwin", "WR", "89");
-    setDefaultPlayers("Rob Gronkowski", "TE", "87");
-    setDefaultPlayers("James Casey", "TE", "80");
-    setDefaultPlayers("Steven Hauschka", "K", "4");
-    setDefaultPlayers("T.J. Ward", "ST", "43");
-    setDefaultPlayers("Tarvaris Jackson", "BN-QB", "7");
-    setDefaultPlayers("Jimmy Graham", "BN-TE", "88");
-    setDefaultPlayers("Derrick Coleman", "BN-FB", "40");
-    setDefaultPlayers("Jordan Norwood", "BN-WR", "11");
-    setDefaultPlayers("Seth Roberts", "BN-WR", "10");
-    setDefaultPlayers("Marcel Reece", "BN-FB", "45");
-    setDefaultPlayers("Roy Helu", "BN-RB", "26");
-    setDefaultPlayers("Jared Abbrederis", "WR", "84");
-    setDefaultPlayers("Husain Abdullah", "RB", "39");
+    setDefaultPlayers("Wilson, Russell", "QB", "3");
+    setDefaultPlayers("Bush, Reggie", "RB", "23");
+    setDefaultPlayers("Anderson, C.J.", "RB", "22");
+    setDefaultPlayers("Maclin, Jeremy", "WR", "19");
+    setDefaultPlayers("Baldwin, Doug", "WR", "89");
+    setDefaultPlayers("Gronkowski, Rob", "TE", "87");
+    setDefaultPlayers("Casey, James", "TE", "80");
+    setDefaultPlayers("Hauschka, Steven", "K", "4");
+    setDefaultPlayers("Ward, T.J.", "ST", "43");
+    setDefaultPlayers("Jackson, Tarvaris", "BN-QB", "7");
+    setDefaultPlayers("Graham, Jimmy", "BN-TE", "88");
+    setDefaultPlayers("Coleman, Derrick", "BN-FB", "40");
+    setDefaultPlayers("Norwood, Jordan", "BN-WR", "11");
+    setDefaultPlayers("Roberts, Seth", "BN-WR", "10");
+    setDefaultPlayers("Reece, Marcel", "BN-FB", "45");
+    setDefaultPlayers("Helu, Roy", "BN-RB", "26");
+    setDefaultPlayers("Abbrederis, Jared", "WR", "84");
+    setDefaultPlayers("Abdullah, Husain", "RB", "39");
 }
 
 // functions done at launch...also linked to buttons in footer of container1 panel
