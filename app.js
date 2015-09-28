@@ -2,12 +2,6 @@
 
 var defaultPhoto = "images/nfl-player.gif";
 var unknownPhoto = "https://auth.cbssports.com/images/players/unknown-player-170x170.png";
-var countr = 0;     // current number of players in roster
-var countn = 0;     // total players on full NFL list
-var countp = 0;     // progress bar counter
-var countt = 0;     // progress bar total records
-var prog = 0;       // progress as a percent 1 to 100
-var players = [];   // JSON download from getPlayers - STILL TEST MODE as of 9/20/15 MSV
 var roster = {
     players:{},
     addPlayer :function (player) {
@@ -15,7 +9,7 @@ var roster = {
             this.players[player.id] = player;
             reloadPlayerCards();
         } else {
-            alert("Unable to Add Player...likely missing or invalid data.");
+            alert("Unable to Add Player... likely missing a field or invalid data format.");
         }
     }
 }
@@ -28,7 +22,6 @@ var fullNFL = {
 }
 
 // roster factory
-
 var Player = function (name, position, number, photo, team, status, byeweek, age, id) {
     this.name = name;
     this.position = position;
@@ -50,7 +43,6 @@ var PlayerFactory1 = {
 }
 
 // fullNFL factory
-
 var Player2 = function (name, position, number, photo, team, status, byeweek, age, id) {
     this.name = name;
     this.position = position;
@@ -68,18 +60,6 @@ var PlayerFactory2 = {
     createPlayer2: function (name, position, number, photo, team, status, byeweek, age) {
         this._uniqueId2++;
         return new Player2(name, position, number, photo, team, status, byeweek, age, this._uniqueId2);
-    }
-}
-
-function updateProgressBar(whatPercent) {
-    var progHtml = '<div class="progress"><div class="progress-bar ' +
-        'progress-bar-info progress-bar-striped active"' +
-        'role="progressbar" aria-valuenow="' + whatPercent + '" aria-valuemin="0" ' +
-        'aria-valuemax="100" style="width:' + whatPercent + '%">Refresh of ' +
-        'Roster - ' + whatPercent + '% Complete</div></div>';
-    $("#progress-update").html(progHtml);
-    if (whatPercent > 99) {
-        $('.progress-bar-striped').removeClass('active');
     }
 }
 
@@ -222,7 +202,8 @@ function removeFullNFL() {
     $("#fullNFLTable").html(htmlTable2Header);
 }
 
-$(function(){
+// jQuery functions
+$(function () {
 
     $('#add-player-form').on('submit', function (event) {
         event.preventDefault();
@@ -254,8 +235,13 @@ $(function(){
         });
     };
 
-    // TOGGLES: default toggles to display container1 at load
-    $( document ).ready(function() {
+    //  stickyjs.com -->
+    $(window).load(function () {
+        $("#sticker").sticky({ topSpacing: 0, center: true, className: "sticky-menu" });
+    });
+
+    // BEGIN TOGGLES: set defaults at load
+    $(document).ready(function () {
         // TOGGLES: initialize the 3 toggles
         $('.toggle1').toggles();
         $('.toggle2').toggles();
@@ -276,8 +262,9 @@ $(function(){
         });
         $('.container3').fadeOut('slow');
     });
+    // END TOGGLES: set defaults at load
 
-    // TOGGLES: Getting notified of changes, and the new state:
+    // BEGIN TOGGLES: Getting notified of changes, and the new state:
     $('.toggle1').on('toggle', function (e, active) {
         if (active) {
             $(".container1").fadeIn('slow');
@@ -304,49 +291,28 @@ $(function(){
             removeFullNFL();
         }
     });
-
-    //  stickyjs.com -->
-    $(window).load(function(){
-        $("#sticker").sticky({ topSpacing: 0, center:true, className:"sticky-menu" });
-    });
+    // END TOGGLES: Getting notified of changes, and the new state:
 
     $('#reload-default-players').on('click', initialPlayerLoad);
     $('#reload-player-images').on('click', refreshFromAPI);
     $('#reload-fullNFL').on('click', listFullNFL2);
     $('#remove-fullNFL').on('click', removeFullNFL);
 
-})
-
-//function getPlayers() {
-//    var url = "http://bcw-getter.herokuapp.com/?url=";
-//    var url2 = "http://api.cbssports.com/fantasy/players/list?version=3.0&SPORT=football&response_format=json";
-//    var apiUrl = url + encodeURIComponent(url2);
-//    players = [];
-//    $.ajax({
-//        type: 'GET',
-//        url: apiUrl,
-//        success: function (response) {
-//            console.log(response);
-//            response = JSON.parse(response);
-//            players = response.players;
-//        },
-//        error: function (response) {
-//            console.log('Whoa! That was a bad request.', response)
-//        }
-//    })
-//    console.log(players.length);
-//}
+});
 
 // from Jake - 09-21-2015 - encapsulating code
 var playerService = function () {
     var _players = [];
     return {
         loadPlayers: function (cb) {
+            console.log("Start playerService.loadPlayers");
             var url = "http://bcw-getter.herokuapp.com/?url=";
             var url2 = "http://api.cbssports.com/fantasy/players/list?version=3.0&SPORT=football&response_format=json";
             var apiUrl = url + encodeURIComponent(url2);
             $.getJSON(apiUrl, function (response) {
                 _players = response.body.players;
+                console.log(_players);
+                console.log("callback:" + cb);
                 cb();
             })
         },
@@ -373,21 +339,9 @@ var playerService = function () {
 }
 
 function refreshFromAPI() {
-    getFromAPI();
-    // progress bar is not not tracking getJSON
-    for (var i = 0; i <= 100; i++) {
-        updateProgressBar(i);
-    }
-}
-
-function getFromAPI() {
     var url = "http://bcw-getter.herokuapp.com/?url=";
     var url2 = "http://api.cbssports.com/fantasy/players/list?version=3.0&SPORT=football&response_format=json";
     var apiUrl = url + encodeURIComponent(url2);
-    countn = 0;
-    countt = 0;
-    countp = 0;
-    prog = 0;
     $.getJSON(apiUrl, function (data) {
         var players = {};
         var fullname2 = "";
@@ -399,9 +353,7 @@ function getFromAPI() {
         var byeweek2 = "";
         var age2 = "";
         players = data.body.players;
-        countt = data.body.players.length * countr;
         players.forEach(function (players) {
-            countn++;
             fullname2 = players.fullname;
             position2 = players.position;
             number2 = players.jersey;
@@ -412,17 +364,11 @@ function getFromAPI() {
             age2 = players.age;
             if (status2) {
                 fullNFL.addPlayer2(PlayerFactory2.createPlayer2(fullname2, position2, number2, photo2, team2, status2, byeweek2, age2));
-            } else if (position2 === "ST") {
-                console.log("Team Name: " + fullname2 + "|pro_team abbr:" + team2);
+            //} else if (position2 === "ST") {
+            //    console.log("Team Name: " + fullname2 + "|pro_team abbr:" + team2);
             }
             for (var id in roster.players) {
-                countp++;
-                prog = (countp / countt) * 100;
-                // TESTING progress bar - console.log has 1 to 100 but does not do updateProgressBar function until JSON is finished
-                // console.log(countt + " : " + countp + " : " + prog.toFixed(0)+"% complete");
-                // updateProgressBar(prog.toFixed(0));
                 var player = roster.players[id];
-                //console.log("Finding image for " + player.id + " : " + player.name + " photo:" + player.photo);
                 if (players.fullname === player.name) {
                     player.photo = players.photo;
                     player.team = players.pro_team;
@@ -434,8 +380,6 @@ function getFromAPI() {
             }
         })
     })
-    // updateProgressBar('100');
-    // updateProgressBar(prog.toFixed(0));
 }
 
 function setDefaultPlayers(name, position, number) {
@@ -463,10 +407,6 @@ function initialPlayerLoad() {
     setDefaultPlayers("Husain Abdullah", "RB", "39");
 }
 
-// functions done at launch...also linked to buttons in footer panel
-//$(".nfl-full-container").fadeOut('slow');
-// hide until requested by user
-//initialPlayerLoad();
-//refreshRosterSummary();
-//refreshFromAPI();
-//listFullNFL2();
+// functions done at launch...also linked to buttons in footer of container1 panel
+initialPlayerLoad();
+refreshFromAPI();
