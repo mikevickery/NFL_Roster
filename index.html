@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>NFL Roster - BoiseCodeWorks - Mike Vickery</title>
-	<meta charset="utf-8" />
+    <meta charset="utf-8" />
     <link href="bootstrap-3.3.5-dist/css/bootstrap.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://rawgithub.com/yesmeck/jquery-jsonview/master/dist/jquery.jsonview.css" />
     <link href="site.css" rel="stylesheet" type="text/css" />
@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="jquery-toggles-master/css/toggles.css">
     <link rel="stylesheet" href="jquery-toggles-master/css/themes/toggles-modern.css">
 </head>
+
 <body>
     <!-- BEGIN OF: sticky VIEW menu of toggles in upper right corner -->
     <div id="sticker" class="sticky-menu">
@@ -42,34 +43,62 @@
             </div>
         </div>
         <div class="panel-body panel-body-container1 nfl-logo">
-            <div class="panel panel-default player-list-box inlineBlock">
+
+            <div class="panel panel-default player-list-box inlineBlock stay-left">
                 <table border="0" cellspacing="5" cellpadding="0" id="playerTable"> </table>
             </div>
-            <div class="panel panel-default addBox inlineBlock">
-                <div class="panel-body inlineBlock">
-                    <h4 class="banner ctr"><strong>Add Player to Roster</strong></h4>
-                    <form id="add-player-form" action="nothing right now" class="navbar-form">
-                        <div class="form-group">
-                            <label for="playerName">Name : </label>
-                            <input id="playerName" type="text" value="" />
-                        </div><br />
-                        <div class="form-group">
-                            <label for="playerPosition">Position : </label>
-                            <input id="playerPosition" type="text" value="" />
-                        </div><br />
-                        <div class="form-group">
-                            <label for="playerNumber">Number : </label>
-                            <input id="playerNumber" type="text" value="" />
-                        </div><br />
-                        <div class="inlineBlock">
-                            <button class="btn btn-default button-add-custom" id="button-add-player" type="submit">Add Player</button>
-                        </div>
-                        <div class="inlineBlock">
-                            <input class="btn btn-default button-reset-custom" type="reset" />
-                        </div>
-                    </form>
+
+            <div id="teamsList" class="inlineBlock stay-right">
+                <h4 class="ui-widget-header hd1"> Players by NFL Team</h4>
+                <div id="teamDetail">
+
                 </div>
             </div>
+
+            <div id="positions" class="inlineBlock stay-right">
+                <h4 class="ui-widget-header hd1"> Players by Position</h4>
+                <div id="positionDetail">
+
+                </div>
+            </div>
+
+            <div id="addingGroup" class="inlineBlock stay-right">
+                <h4 class="ui-widget-header hd1">Add Players to My Roster</h4>
+                <div class="ui-widget-content">
+                    <ol>
+                        <li class="placeholder">Drag and drop player here</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!--  LEAVE THIS SECTION IN...hide old add player box for now
+                        <div class="panel panel-default addBox inlineBlock">
+                            <div class="panel-body inlineBlock">
+                                <h4 class="banner ctr"><strong>Add Player to Roster</strong></h4>
+                                <form id="add-player-form" action="nothing right now" class="navbar-form">
+                                    <div class="form-group">
+                                        <label for="playerName">Name : </label>
+                                        <input id="playerName" type="text" value="" />
+                                    </div><br />
+                                    <div class="form-group">
+                                        <label for="playerPosition">Position : </label>
+                                        <input id="playerPosition" type="text" value="" />
+                                    </div><br />
+                                    <div class="form-group">
+                                        <label for="playerNumber">Number : </label>
+                                        <input id="playerNumber" type="text" value="" />
+                                    </div><br />
+                                    <div class="inlineBlock">
+                                        <button class="btn btn-default button-add-custom" id="button-add-player" type="submit">Add Player</button>
+                                    </div>
+                                    <div class="inlineBlock">
+                                        <input class="btn btn-default button-reset-custom" type="reset" />
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                end of old add player box  -->
+
         </div>
         <!-- BEGIN: footer -->
         <div class="panel-footer container-footer1">
@@ -97,14 +126,13 @@
             <div class="inlineBlock">
                 <input class="btn btn-default btn-xs button-default-custom" id="reload-default-players" value="Load 18 Players" />
                 <input class="btn btn-default btn-xs button-initial-custom" id="reload-player-images" value="Refresh NFL" />
-                <input class="btn btn-default btn-xs button-initial-custom" id="reload-team-members" value="Refresh Team" />
+                <input class="btn btn-default btn-xs button-default-custom" id="reload-team-members" value="Load Player Sort" />
             </div>
             <!-- END: footer -->
         </div>
     </div>
- 
-    <!-- END OF: dynamic container -->
 
+    <!-- END OF: dynamic container -->
     <!-- BEGIN OF: player card container -->
     <div class="container2">
         <div class="panel">
@@ -125,7 +153,6 @@
         <!-- END: footer -->
     </div>
     <!-- END OF: player card container -->
-
     <!-- BEGIN OF: Full NFL Roster container -->
     <div class="panel nfl-full-container container3">
         <div class="panel-heading">
@@ -147,14 +174,15 @@
     </div>
     <!-- END OF: Full NFL Roster container -->
 
+    <!-- PACE progress bar -->
+    <script src="pace-1.0.2/pace.js"></script>
     <!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>-->
     <script type="text/javascript" src="jquery.sticky.js"></script>
     <!-- Full NFL Roster ends -->
     <script type="text/javascript" src="https://rawgithub.com/yesmeck/jquery-jsonview/master/dist/jquery.jsonview.js"></script>
     <script type="text/javascript" src="app.js"></script>
-    <!-- PACE progress bar -->
-    <script src="pace-1.0.2/pace.js"></script>
     <!-- TOGGLE SWITCH http://simontabor.com/labs/toggles/ -->
     <script type="text/javascript" src="jquery-toggles-master/toggles.js"></script>
+
 </body>
 </html>

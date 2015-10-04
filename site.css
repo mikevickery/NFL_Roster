@@ -43,6 +43,9 @@ input {
 .stay-left {
     float:left;
 }
+.stay-right {
+    float:right;
+}
 .player-list-box {
     display:inline-block;
     margin:10px;
@@ -153,5 +156,43 @@ input {
     background-color:lightblue;
 }
 #sticker {
-    float:right;
+    float:inherit;
+}
+.hd1 { 
+    padding: .2em; 
+    margin: 0; 
+}
+#positions { 
+    width: 275px; 
+    margin-right: .2em; 
+}
+#positions ul {
+    font-size:small;
+    margin: 0;
+    list-style:none;
+    padding-left:0;
+    padding: 0, 0, 0, 0;
+}
+#teamsList { 
+    width: 275px;  
+    margin-right: .2em; 
+}
+#teamsList ul {
+    font-size:small;
+    margin: 0;
+    list-style:none;
+    padding-left:0;
+    padding: 0, 0, 0, 0;
+}
+#addingGroup { 
+    width: 275px; 
+    margin-right: .2em; 
+    /* margin-top: 1em; */ 
+}
+  /* style the add player box to maximize the droppable hitarea */
+#addingGroup ol { 
+    margin: 0;
+    list-style:none;
+    text-indent:4px;
+    padding: 1em 1em 1em 1em; 
 }
