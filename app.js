@@ -4,6 +4,7 @@ var defaultPhoto = "images/nfl-player.gif";
 var unknownPhoto = "https://auth.cbssports.com/images/players/unknown-player-170x170.png";
 var teams = [];
 var byPositions = [];
+var toDropAdd = [];
 
 var roster = {
     players:{},
@@ -171,10 +172,12 @@ $(function () {
 
     // BEGIN TOGGLES: set defaults at load
     $(document).ready(function () {
-        // TOGGLES: initialize the 3 toggles
+        // TOGGLES: initialize toggles
         $('.toggle1').toggles();
         $('.toggle2').toggles();
         $('.toggle3').toggles();
+        $('.toggle4').toggles();
+        $('.toggle5').toggles();
         $('.toggle1').toggles({
             drag: false,
             on: true
@@ -190,6 +193,16 @@ $(function () {
             on: false
         });
         $('.container3').fadeOut('slow');
+        $('.toggle4').toggles({
+            drag: false,
+            on: false
+        });
+        $('#teamDetail').fadeIn('slow');
+        $('.toggle5').toggles({
+            drag: false,
+            on: false
+        });
+        $('#positionDetail').fadeIn('slow');
     });
     // END TOGGLES: set defaults at load
 
@@ -220,49 +233,63 @@ $(function () {
             removeFullNFL();
         }
     });
+    $('.toggle4').on('toggle', function (e, active) {
+        if (active) {
+            $("#teamDetail").fadeIn('slow');
+        } else {
+            $("#teamDetail").fadeOut('slow');
+        }
+    });
+    $('.toggle5').on('toggle', function (e, active) {
+        if (active) {
+            $("#positionDetail").fadeIn('slow');
+        } else {
+            $("#positionDetail").fadeOut('slow');
+        }
+    });
     // END TOGGLES: Getting notified of changes, and the new state:
-
 });
 
 // from Jake - 09-21-2015 - encapsulating code
-var playerService = function () {
-    var _players = [];
-    return {
-        loadPlayers: function (cb) {
-            console.log("Start playerService.loadPlayers");
-            var url = "http://bcw-getter.herokuapp.com/?url=";
-            var url2 = "http://api.cbssports.com/fantasy/players/list?version=3.0&SPORT=football&response_format=json";
-            var apiUrl = url + encodeURIComponent(url2);
-            $.getJSON(apiUrl, function (response) {
-                _players = response.body.players;
-                console.log(_players);
-                console.log("callback:" + cb);
-                cb();
-            })
-        },
-        getPlayers: function () {
-            return _players.slice();
-        },
-        getPlayersByTeam: function (team) {
-            var requestedTeam = _players.filter(function (player) {
-                if (player.pro_team === team) {
-                    return true;
-                }
-            })
-            return requestedTeam;
-        },
-        getPlayersByPosition: function (position) {
-            var requestedPosition = _players.filter(function (player) {
-                if (player.position === position) {
-                    return true;
-                }
-            })
-            return requestedPosition;
-        }
-    }   // encapsulated in return of playerService
-}
+//var playerService = function () {
+//    var _players = [];
+//    return {
+//        loadPlayers: function (cb) {
+//            console.log("Start playerService.loadPlayers");
+//            var url = "http://bcw-getter.herokuapp.com/?url=";
+//            var url2 = "http://api.cbssports.com/fantasy/players/list?version=3.0&SPORT=football&response_format=json";
+//            var apiUrl = url + encodeURIComponent(url2);
+//            $.getJSON(apiUrl, function (response) {
+//                _players = response.body.players;
+//                console.log(_players);
+//                console.log("callback:" + cb);
+//                cb();
+//            })
+//        },
+//        getPlayers: function () {
+//            return _players.slice();
+//        },
+//        getPlayersByTeam: function (team) {
+//            var requestedTeam = _players.filter(function (player) {
+//                if (player.pro_team === team) {
+//                    return true;
+//                }
+//            })
+//            return requestedTeam;
+//        },
+//        getPlayersByPosition: function (position) {
+//            var requestedPosition = _players.filter(function (player) {
+//                if (player.position === position) {
+//                    return true;
+//                }
+//            })
+//            return requestedPosition;
+//        }
+//    }   // encapsulated in return of playerService
+//}
 
 function refreshFromAPI() {
+    teams = [];
     var url = "http://bcw-getter.herokuapp.com/?url=";
     var url2 = "http://api.cbssports.com/fantasy/players/list?version=3.0&SPORT=football&response_format=json";
     var apiUrl = url + encodeURIComponent(url2);
@@ -276,7 +303,6 @@ function refreshFromAPI() {
         var status2 = "";
         var byeweek2 = "";
         var age2 = "";
-        teams = [];
         var teamName = "";
         players = data.body.players;
         players.forEach(function (players) {
@@ -347,6 +373,7 @@ function listTeamDetail() {
         //    }
         //});
     });
+    $('#teamDetail').fadeIn('slow');
 }
 
 function listPositionDetail() {
@@ -377,84 +404,88 @@ function listPositionDetail() {
             drop: function (event, ui) {
                 $(this).find(".placeholder").remove();
                 $("<li></li>").text(ui.draggable.text()).appendTo(this);
+                toDropAdd.push(ui.draggable.text());
+                console.log('Staged : ' + ui.draggable.text() + '  toDropAdd length : ' + toDropAdd.length);
             }
         }).sortable({
             items: "li:not(.placeholder)",
             sort: function () {
                 // gets added unintentionally by droppable interacting with sortable
-                // using connectWithSortable fixes this, but doesn't allow you to customize active/hoverClass options
+                // using connectWithSortable fixes this, but doesn't allow customized active/hoverClass options
                 $(this).removeClass("ui-state-default");
             }
         });
     });
+    $('#positionDetail').fadeIn('slow');
+
 }
 
 function refreshTeamMembers() {
-    // build team array
-    for (var i = 0; i < teams.length; i++) {
-        //console.log(teams[i].abbrv+"=====================================================");
+    // build teams array first...then build byPositions array below
+    if (teams.length != 0 && byPositions.length < 1) {
+        $("#teamDetail").fadeOut('fast');
+        $('.toggle5').toggles({ on: true });
+        $("#positionDetail").fadeOut('fast');
+        $('.toggle4').toggles({ on: true });
+        for (var i = 0; i < teams.length; i++) {
+            for (var id in fullNFL.players2) {
+                var player = fullNFL.players2[id];
+                if (!player) {
+
+                }
+                if (player.status === "A") {
+                    if (teams[i].abbrv === player.team) {
+                        teams[i].members.push(player.id);
+                        teams[i].count++;
+                    }
+                }
+            }
+        }
+        //build byPosition array
+        byPositions = [];
+        byPositions.push({ description: "Quarterback", members: [], count: 0 }); //0 in array byPositions
+        byPositions.push({ description: "Running Back", members: [], count: 0 }); //1 in array byPositions
+        byPositions.push({ description: "Wide Receiver", members: [], count: 0 }); //2 in array byPositions
+        byPositions.push({ description: "Tight End", members: [], count: 0 }); //3 in array byPositions
+        byPositions.push({ description: "Placekicker", members: [], count: 0 }); //4 in array byPositions
+        byPositions.push({ description: "Special Teams", members: [], count: 0 }); //5 in array byPositions
         for (var id in fullNFL.players2) {
             var player = fullNFL.players2[id];
             if (!player) {
 
             }
             if (player.status === "A") {
-                if (teams[i].abbrv === player.team) {
-                    teams[i].members.push(player.id);
-                    teams[i].count++;
-                    //console.log(teams[i].abbrv + ":" + teams[i].name + ":" + player.team + " id:" + player.id + " n:" + player.name);
-                    //console.log("Members : " + teams[i].count + " of " + teams[i].name);
+                switch (player.position) {
+                    case "QB":
+                        byPositions[0].members.push(player.id);
+                        byPositions[0].count++;
+                        break;
+                    case "RB":
+                        byPositions[1].members.push(player.id);
+                        byPositions[1].count++;
+                        break;
+                    case "WR":
+                        byPositions[2].members.push(player.id);
+                        byPositions[2].count++;
+                        break;
+                    case "TE":
+                        byPositions[3].members.push(player.id);
+                        byPositions[3].count++;
+                        break;
+                    case "K":
+                        byPositions[4].members.push(player.id);
+                        byPositions[4].count++;
+                        break;
+                    default:
+                        byPositions[5].members.push(player.id);
+                        byPositions[5].count++;
+                        break;
                 }
             }
         }
+        listPositionDetail();
+        listTeamDetail();
     }
-    //build byPosition array
-    byPositions = [];
-    byPositions.push({ description: "Quarterback", members: [], count: 0 }); //0 in array byPositions
-    byPositions.push({ description: "Running Back", members: [], count: 0 }); //1 in array byPositions
-    byPositions.push({ description: "Wide Receiver", members: [], count: 0 }); //2 in array byPositions
-    byPositions.push({ description: "Tight End", members: [], count: 0 }); //3 in array byPositions
-    byPositions.push({ description: "Placekicker", members: [], count: 0 }); //4 in array byPositions
-    byPositions.push({ description: "Special Teams", members: [], count: 0 }); //5 in array byPositions
-    for (var id in fullNFL.players2) {
-        var player = fullNFL.players2[id];
-        if (!player) {
-
-        }
-        if (player.status === "A") {
-            switch (player.position) {
-                case "QB":
-                    byPositions[0].members.push(player.id);
-                    byPositions[0].count++;
-                    break;
-                case "RB":
-                    byPositions[1].members.push(player.id);
-                    byPositions[1].count++;
-                    break;
-                case "WR":
-                    byPositions[2].members.push(player.id);
-                    byPositions[2].count++;
-                    break;
-                case "TE":
-                    byPositions[3].members.push(player.id);
-                    byPositions[3].count++;
-                    break;
-                case "K":
-                    byPositions[4].members.push(player.id);
-                    byPositions[4].count++;
-                    break;
-                default:
-                    byPositions[5].members.push(player.id);
-                    byPositions[5].count++;
-                    break;
-            }
-        }
-    }
-    for (var i = 0; i < byPositions.length; i++) {
-        console.log("Position: " + byPositions[i].description + " count:" + byPositions[i].count);
-    }
-    listPositionDetail();
-    listTeamDetail();
 }
 
 function setDefaultPlayers(name, position, number) {
@@ -555,18 +586,60 @@ function removeFullNFL() {
     $("#fullNFLTable").html(htmlTable2Header);
 }
 
+function moveStagedPlayers() {
+    for (var i = 0; i < toDropAdd.length; i++) {
+        for (var id in fullNFL.players2) {
+            var player = fullNFL.players2[id];
+            if (!player) {
+
+            }
+            if (toDropAdd[i] === player.name + ' ' + player.position || toDropAdd[i] === player.name + ' ' + player.team) {
+                roster.addPlayer(PlayerFactory1.createPlayer(player.name, player.position, player.number, player.photo, player.team, player.status, player.byeweek, player.age));
+                break;
+            }
+        }
+    }
+    //reloadPlayerCards();
+    //byPositions = [];
+    //toDropAdd = [];
+    //refreshTeamMembers();
+
+    //var resetDropAdd = '<li>drag and drop player here</li>';
+
+    //var widget = $(".placeholder").droppable("widget");
+    //console.log(widget);
+    //$(".placeholder").droppable({
+    //    out: function (event, ui) {
+    //        console.log('Out : ' + ui.draggable.text());
+    //    }
+    //});
+    ////$(".placeholder").droppable({
+    //    activate: function (event, ui) { }
+    //});
+    //$(".placeholder").droppable("destroy");
+    //$(".placeholder").replaceWith(resetDropAdd);
+    //$(function () {
+    //    $(".placeholder").droppable({
+    //    })
+    //    $(" ").text(" ").remove("#addingGroup ol");
+    //});
+}
+
 // jQuery buttons
 $(function () {
 
-    $('#reload-default-players').on('click', initialPlayerLoad);
-    $('#reload-player-images').on('click', refreshFromAPI);
+    //$('#reload-default-players').on('click', initialPlayerLoad);
+    //$('#reload-player-images').on('click', refreshFromAPI);
+    $('#move-toDropAdd').on('click', moveStagedPlayers);
     $('#reload-team-members').on('click', refreshTeamMembers);
     $('#reload-fullNFL').on('click', listFullNFL2);
-    //$(document).on('click', '#reload-fullNFL', function (e) { pace.start(); });
     $('#remove-fullNFL').on('click', removeFullNFL);
 
 });
 
-// functions done at launch...also linked to buttons in footer of container1 panel
+// functions done at page load
+$(function () {
+    $(".sticky-menu").scrollView();
+});
 initialPlayerLoad();
 refreshFromAPI();

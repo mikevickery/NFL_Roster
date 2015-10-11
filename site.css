@@ -44,10 +44,16 @@ input {
     float:left;
 }
 .stay-right {
-    float:right;
+    float: right;
+}
+.no-float {
+    float:none;
+}
+.col-md-4 {
+    width:300px;
 }
 .player-list-box {
-    display:inline-block;
+    width:263px;
     margin:10px;
     border-width:8px;
     border-color:darkblue;
@@ -82,12 +88,13 @@ input {
 .button-initial-custom {
     background-color:#A2CCFF;
     border:1px darkblue solid;
-    width:90px;
+    width:110px;
 }
 .button-default-custom {
-    background-color:#A2CCFF;
+    text-align:left;
+    background-color:lightgray;
     border:1px darkblue solid;
-    width:105px;
+    width:275px;
 }
 .button-fullNFL-custom {
     background-color:#A2CCFF;
@@ -195,4 +202,25 @@ input {
     list-style:none;
     text-indent:4px;
     padding: 1em 1em 1em 1em; 
+}
+.display-table {
+    display: table;
+    width: 100%;
+}
+.col-md-table-cell {
+    @media (min-width: @screen-md-min) {
+        display: table-cell;
+        vertical-align: top;
+        float: none;
+    }
+}
+.col-sm-table-cell {
+    @media (min-width: @screen-sm-min) {
+        display: table-cell;
+        vertical-align: top;
+        float: none;
+    }    
+}
+.vertical-align-middle {
+    vertical-align: middle;
 }

@@ -20,17 +20,17 @@
 </head>
 
 <body>
-    <!-- BEGIN OF: sticky VIEW menu of toggles in upper right corner -->
+    <!-- BEGIN OF: sticky VIEW menu of toggles in upper left corner -->
     <div id="sticker" class="sticky-menu">
         <div class="btn btn-info button-view-custom inlineBlock">
             <span class="viewMenu1-text"> Roster View </span>
             <span class="glyphicon glyphicon-th-list"></span>
             <span class="viewMenu1-text">&#32; Dynamic: </span>
-            <div class="toggle1 toggle-modern inlineBlock" id="view-menu1"></div>
+            <div class="toggle1 toggle-modern inlineBlock"></div>
             <span class="viewMenu1-text"> &#32;Cards: </span>
-            <div class="toggle2 toggle-modern inlineBlock" id="view-menu2"></div>
+            <div class="toggle2 toggle-modern inlineBlock"></div>
             <span class="viewMenu1-text"> &#32;NFL: </span>
-            <div class="toggle3 toggle-modern inlineBlock" id="view-menu3"></div>
+            <div class="toggle3 toggle-modern inlineBlock"></div>
         </div>
     </div>
 
@@ -38,36 +38,50 @@
     <br />
     <div class="panel container1">
         <div class="panel-heading">
-            <div>
-                <h4 class="banner inlineBlock stay-left"><strong>My Dynamic Roster</strong></h4>
+            <div class="stay-left">
+                <h4 class="banner"><strong>My Dynamic Roster </strong></h4>
             </div>
         </div>
         <div class="panel-body panel-body-container1 nfl-logo">
-
-            <div class="panel panel-default player-list-box inlineBlock stay-left">
-                <table border="0" cellspacing="5" cellpadding="0" id="playerTable"> </table>
-            </div>
-
-            <div id="teamsList" class="inlineBlock stay-right">
-                <h4 class="ui-widget-header hd1"> Players by NFL Team</h4>
-                <div id="teamDetail">
-
+            <div class="col-md-4">
+                <div>
+                    <input class="btn btn-default button-default-custom hd1" id="reload-team-members" value="1. Load Players" />
+                </div>
+                <div id="addingGroup">
+                    <h5 class="ui-widget-header button-default-custom hd1">2. Staging Area to Add My Players</h5>
+                    <div class="ui-widget-content">
+                        <ol>
+                            <li class="placeholder">Hint: Click '<b>Load Players</b>' button above, click dropdown of position or team, drag and drop player here, then click '<b>Move Staged to My Roster</b>' below</li>
+                        </ol>
+                    </div>
+                    <input class="btn btn-default button-default-custom hd1" id="move-toDropAdd" value="3. Move Staged to My Roster" />
+                </div>
+                <div class="panel panel-default player-list-box">
+                    <table border="0" cellspacing="5" cellpadding="0" id="playerTable"> </table>
                 </div>
             </div>
 
-            <div id="positions" class="inlineBlock stay-right">
-                <h4 class="ui-widget-header hd1"> Players by Position</h4>
-                <div id="positionDetail">
+            <div class="col-md-4">
+                <div id="positions">
+                    <div class="ui-widget-header">
+                        <span class="hd1 inlineBlock">View Players by Position:</span>
+                        <div class="toggle5 toggle-modern inlineBlock stay-right" style="text-align:center"></div>
+                    </div>
+                    <div id="positionDetail">
 
+                    </div>
                 </div>
             </div>
 
-            <div id="addingGroup" class="inlineBlock stay-right">
-                <h4 class="ui-widget-header hd1">Add Players to My Roster</h4>
-                <div class="ui-widget-content">
-                    <ol>
-                        <li class="placeholder">Drag and drop player here</li>
-                    </ol>
+            <div class="col-md-4">
+                <div id="teamsList">
+                    <div class="ui-widget-header">
+                        <span class="hd1 inlineBlock">View Players by NFL Team:</span>
+                        <div class="toggle4 toggle-modern inlineBlock stay-right" style="text-align:center"></div>
+                    </div>
+                    <div id="teamDetail">
+
+                    </div>
                 </div>
             </div>
 
@@ -122,11 +136,6 @@
                     <li>1 Team Defense/Special Teams (D/ST)</li>
                     <li>7 Bench (BN)</li>
                 </ul>
-            </div>
-            <div class="inlineBlock">
-                <input class="btn btn-default btn-xs button-default-custom" id="reload-default-players" value="Load 18 Players" />
-                <input class="btn btn-default btn-xs button-initial-custom" id="reload-player-images" value="Refresh NFL" />
-                <input class="btn btn-default btn-xs button-default-custom" id="reload-team-members" value="Load Player Sort" />
             </div>
             <!-- END: footer -->
         </div>
